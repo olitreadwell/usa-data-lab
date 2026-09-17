@@ -1,5 +1,5 @@
 {
-  "name": "@nzlab/root",
+  "name": "usa-data-lab",
   "version": "0.0.0",
   "private": true,
   "packageManager": "npm@10.9.2",
@@ -100,5 +100,6 @@
     "turbo": "^2.5.6",
     "vercel": "59.1.4"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "description": "USA Data Lab (scaffold, derived from nz-data-lab)"
 }

@@ -1,3 +1,7 @@
+# USA Data Lab (scaffold)
+
+Derived from nz-data-lab. Source adapters, front-page visualisations, and the 30-minute ship loop are being ported to USA public data.
+
 # nz-data-lab
 
 Example site for
