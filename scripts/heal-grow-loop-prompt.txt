@@ -1,0 +1,31 @@
+# usa-data-lab grow loop: heal session
+
+The grow loop has skipped three iterations in a row. Diagnose why and fix the
+cause, not the symptom.
+
+Read `~/Library/Logs/usa-data-lab-loop.log` and
+`~/Library/Logs/usa-data-lab-loop-state.json` first: they record the skip
+reason each time.
+
+The usual causes, in order of likelihood:
+
+1. The tree is dirty or `main` is behind `origin/main`. Commit or discard the
+   leftover change, pull, and re-run the wrapper by hand to confirm it starts.
+2. The codex session dies on startup. The wrapper sources
+   `~/.config/op/secrets.env` for the provider keys; check that
+   `OLLAMA_CLOUD_MAX_API_KEY` is still in that file.
+3. A gate fails on `main` in a way the grow prompt cannot get past. Fix the
+   repo, not the test.
+4. The source the loop wants is gone or has moved. Replace it with a live one
+   and say so in `LOOP-NOTES.md`.
+
+When it is fixed, confirm the wiring still reports ok:
+
+    $HOME/code/usa-uk-data-stack/loops/loop-wrapper.sh \
+      "$HOME/code/usa-data-lab" \
+      "$HOME/code/usa-data-lab/scripts/grow-loop-prompt.txt" \
+      "$HOME/code/usa-data-lab/scripts/heal-grow-loop-prompt.txt" \
+      usa-data-lab --dry-run
+
+Then append one dated line to `LOOP-NOTES.md` describing the cause and the
+fix.

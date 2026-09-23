@@ -1,0 +1,57 @@
+# usa-data-lab grow loop (daily)
+
+You are running one iteration of the US data lab grow loop on `main`, from a
+clean tree up to date with `origin/main`.
+
+The lab is the demo layer of a three-repo chain: `awesome-open-usa-data` finds
+sources, `usa-open-data-connectors` turns them into adapters, and this repo
+renders one story per adapter. This loop keeps the demo alive and grows it.
+
+## Iteration contract
+
+1. Audit. Run `npm run check` (format, lint, type-check, tests, build, smoke,
+   e2e, links) with `E2E_PORT=3200` if port 3000 is busy. Fix what is broken,
+   including a stale or wrong number on a published story. Do not weaken a
+   test to make it pass.
+2. Verify the deploy. Fetch `https://usa-data-lab.vercel.app` and the
+   published story path, and confirm the numbers in the HTML match the number
+   the source returns today. A story that renders the wrong figure is a bug.
+3. Grow. Add exactly one new microsite story, end to end:
+   - Pick a source from `packages/usa-sources` that no published microsite
+     uses yet. Read `apps/web/src/lib/microsites.ts` to see what is taken.
+   - If every vendored source is already used, add one adapter to
+     `~/code/usa-open-data-connectors` on a branch named
+     `feat/connectors/<snake_case_description>`, push it, open a PR with
+     `gh pr create --fill`, then vendor it here with
+     `node scripts/sync-connectors.mjs --from ../usa-open-data-connectors`.
+     Never edit `packages/usa-sources` by hand.
+   - Sources that need a key are allowed when the key is free and the repo
+     already reads it from the environment. Keyless still comes first.
+   - Write the story config in `microsites.ts`, a chart component with a unit
+     test, a page-test block, a data note, and references that you have
+     checked respond. Then add the slug to `published-microsites.ts`.
+   - Real numbers only. Every figure in the copy comes from the data the page
+     renders or from a citation in the reference list. No invented stats.
+4. Ship. One Conventional Commit for the story (`feat(stories): add ...`),
+   push `main`, and confirm the Vercel production deploy goes READY.
+5. Log. Append one dated line to `LOOP-NOTES.md`: what shipped, or what
+   blocked it.
+
+## Copy rules
+
+The site copy is read by people. Follow the repo's prose gate: no em dashes,
+no banned words (delve, crucial, foster, tapestry, underscore, pivotal), no
+rule-of-three padding, no "Let me know if" closers. Plain sentences, specific
+numbers.
+
+## Hard rules
+
+- Only real, verified, public sources. Confirm a URL responds before linking
+  it. Note that `www.bls.gov` and some agency sites answer 403 to scripted
+  requests; that is not a dead link, so check in a browser before removing one.
+- Never send email or messages to a real person. Drafts only.
+- Never force-push, never rewrite pushed history, never delete a published
+  story to make a check pass. Retire a story by removing its slug from
+  `published-microsites.ts` and saying why in LOOP-NOTES.md.
+- Same blocker fails three times: log it and exit non-zero.
+- Stop when the one story ships. Cadence: daily via launchd.
