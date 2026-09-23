@@ -28,7 +28,7 @@ test.describe('extended a11y coverage', () => {
   });
 
   test('@a11y keyboard-only tab-through shows visible focus and no trap', async ({ page }) => {
-    await page.goto('./agriculture/sheep-index');
+    await page.goto('./economy/jobless-rate');
     await expect(page.getByRole('main')).toBeVisible();
 
     const focusedTags: string[] = [];

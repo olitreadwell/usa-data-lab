@@ -11,7 +11,7 @@ interface SplitDecorativeEmojiResult {
 /** Matches a leading emoji grapheme (e.g. "🐑", "🏞️"). */
 const EMOJI_GRAPHEME_RE = /^\p{Extended_Pictographic}/u;
 
-/** Splits the leading decorative emoji from an eyebrow (e.g. "🐑 the sheep index"). */
+/** Splits the leading decorative emoji from an eyebrow (e.g. "📉 the jobless rate"). */
 function splitDecorativeEmoji(eyebrow: string): SplitDecorativeEmojiResult {
   const segments = Array.from(
     new Intl.Segmenter('en', { granularity: 'grapheme' }).segment(eyebrow),

@@ -6,7 +6,7 @@ import { ReportIssueButton } from './ReportIssueButton';
 
 expect.extend(toHaveNoViolations);
 
-const OPEN_URL = 'https://github.com/olitreadwell/nz-data-lab/issues/new';
+const OPEN_URL = 'https://github.com/olitreadwell/usa-data-lab/issues/new';
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -15,7 +15,7 @@ afterEach(() => {
 
 describe('ReportIssueButton', () => {
   it('opens a dialog with the report form', () => {
-    render(<ReportIssueButton pageLabel="Sheep index" />);
+    render(<ReportIssueButton pageLabel="Jobless rate" />);
     fireEvent.click(screen.getByRole('button', { name: 'Report an issue' }));
     expect(screen.getByRole('dialog', { name: 'Report an issue' })).toBeInTheDocument();
     expect(screen.getByRole('textbox', { name: /what happened/i })).toBeInTheDocument();
@@ -36,10 +36,10 @@ describe('ReportIssueButton', () => {
 
   it('opens a prefilled GitHub issue with page context on submit', () => {
     const open = vi.spyOn(window, 'open').mockImplementation(() => null);
-    render(<ReportIssueButton pageLabel="Sheep index" />);
+    render(<ReportIssueButton pageLabel="Jobless rate" />);
     fireEvent.click(screen.getByRole('button', { name: 'Report an issue' }));
     fireEvent.change(screen.getByRole('textbox', { name: /what happened/i }), {
-      target: { value: 'The sheep chart shows the wrong year range.' },
+      target: { value: 'The jobless chart shows the wrong year range.' },
     });
     fireEvent.click(screen.getByRole('button', { name: 'Open GitHub issue' }));
 
@@ -48,17 +48,17 @@ describe('ReportIssueButton', () => {
     expect(url.startsWith(OPEN_URL)).toBe(true);
     const params = new URLSearchParams(url.split('?')[1] ?? '');
     expect(params.get('title')).toContain('[Bug]');
-    expect(params.get('body')).toContain('Sheep index');
-    expect(params.get('body')).toContain('The sheep chart shows the wrong year range.');
+    expect(params.get('body')).toContain('Jobless rate');
+    expect(params.get('body')).toContain('The jobless chart shows the wrong year range.');
     expect(params.get('body')).toContain('## Environment');
     expect(params.get('body')).toContain('Severity: Not sure');
   });
 
   it('preselects the current microsite from the URL', () => {
-    window.history.pushState({}, '', '/microsites/sheep-index');
+    window.history.pushState({}, '', '/economy/jobless-rate');
     render(<ReportIssueButton />);
     fireEvent.click(screen.getByRole('button', { name: 'Report an issue' }));
-    expect(screen.getByRole('combobox', { name: /item/i })).toHaveValue('Sheep index');
+    expect(screen.getByRole('combobox', { name: /item/i })).toHaveValue('Jobless rate');
   });
 
   it('includes the microsite data note when a microsite is selected', () => {
@@ -66,17 +66,17 @@ describe('ReportIssueButton', () => {
     render(<ReportIssueButton />);
     fireEvent.click(screen.getByRole('button', { name: 'Report an issue' }));
     fireEvent.change(screen.getByRole('combobox', { name: /item/i }), {
-      target: { value: 'Sheep index' },
+      target: { value: 'Jobless rate' },
     });
     fireEvent.change(screen.getByRole('textbox', { name: /what happened/i }), {
-      target: { value: 'The sheep chart shows the wrong year range.' },
+      target: { value: 'The jobless chart shows the wrong year range.' },
     });
     fireEvent.click(screen.getByRole('button', { name: 'Open GitHub issue' }));
 
     const url = open.mock.calls[0]?.[0] as string;
     const params = new URLSearchParams(url.split('?')[1] ?? '');
     expect(params.get('body')).toContain('## Data context');
-    expect(params.get('body')).toContain('Stats NZ Aotearoa Data Explorer');
+    expect(params.get('body')).toContain('Bureau of Labor Statistics public data API');
   });
 
   it('includes the expected field when filled', () => {
@@ -84,7 +84,7 @@ describe('ReportIssueButton', () => {
     render(<ReportIssueButton />);
     fireEvent.click(screen.getByRole('button', { name: 'Report an issue' }));
     fireEvent.change(screen.getByRole('textbox', { name: /what happened/i }), {
-      target: { value: 'The sheep chart shows the wrong year range.' },
+      target: { value: 'The jobless chart shows the wrong year range.' },
     });
     fireEvent.change(screen.getByRole('textbox', { name: /what did you expect/i }), {
       target: { value: 'The chart should start in 1994.' },
@@ -205,7 +205,7 @@ describe('ReportIssueButton blocked popup', () => {
     render(<ReportIssueButton />);
     fireEvent.click(screen.getByRole('button', { name: 'Report an issue' }));
     fireEvent.change(screen.getByRole('textbox', { name: /what happened/i }), {
-      target: { value: 'The sheep chart shows the wrong year range.' },
+      target: { value: 'The jobless chart shows the wrong year range.' },
     });
     fireEvent.click(screen.getByRole('button', { name: 'Open GitHub issue' }));
 
@@ -234,7 +234,7 @@ describe('ReportIssueButton reset after submit', () => {
       target: { value: 'Other' },
     });
     fireEvent.change(screen.getByRole('textbox', { name: /what happened/i }), {
-      target: { value: 'The sheep chart shows the wrong year range.' },
+      target: { value: 'The jobless chart shows the wrong year range.' },
     });
     fireEvent.click(screen.getByRole('button', { name: 'Open GitHub issue' }));
 

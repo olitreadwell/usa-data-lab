@@ -1,13 +1,13 @@
-import { Container } from '@nzlab/ui';
+import { Container } from '@uslab/ui';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { JoblessChart } from '@/components/JoblessChart';
 import { MicrositeStory } from '@/components/MicrositeStory';
 import { ReportIssueButton } from '@/components/ReportIssueButton';
-import { SheepChart } from '@/components/SheepChart';
 import { StatCard } from '@/components/StatCard';
-import { env } from '@/env';
+import { fetchJoblessSeries, type JoblessSeries } from '@/lib/jobless-data';
 import {
   categorySlugFor,
   freshnessLabelFor,
@@ -15,8 +15,7 @@ import {
   MICROSITES,
   relatedMicrositesFor,
 } from '@/lib/microsites';
-import { fetchSheepSeries } from '@/lib/sheep-data';
-import { formatMillions as formatMillionsSheep } from '@/lib/sheep-format';
+import { formatPercent, formatPointChange } from '@/lib/us-format';
 
 interface MicrositePageProps {
   params: Promise<{ category: string; slug: string }>;
@@ -35,14 +34,14 @@ export async function generateMetadata({ params }: MicrositePageProps): Promise<
   const { category, slug } = await params;
   const microsite = MICROSITES.find((candidate) => candidate.slug === slug);
   if (microsite === undefined || categorySlugFor(microsite) !== category) {
-    return { title: 'nz-data-lab' };
+    return { title: 'usa-data-lab' };
   }
   const path = micrositePathFor(microsite);
   return {
-    title: `${microsite.label} - nz-data-lab`,
+    title: `${microsite.label} - usa-data-lab`,
     description: microsite.description,
     openGraph: {
-      title: `${microsite.label} - nz-data-lab`,
+      title: `${microsite.label} - usa-data-lab`,
       description: microsite.description,
       url: path,
       type: 'article',
@@ -59,14 +58,14 @@ export default async function MicrositePage({
     notFound();
   }
 
-  const [sheep] = await Promise.all([fetchSheepSeries(env.STATS_NZ_SUBSCRIPTION_KEY)]);
+  const jobless = await fetchJoblessSeries();
 
   const related = relatedMicrositesFor(microsite).map((candidate) => ({
     label: candidate.label,
     href: micrositePathFor(candidate),
   }));
 
-  const content = renderStoryContent(slug, { sheep });
+  const content = renderStoryContent(slug, { jobless });
 
   return (
     <>
@@ -117,7 +116,7 @@ export default async function MicrositePage({
 }
 
 interface StoryData {
-  sheep: Awaited<ReturnType<typeof fetchSheepSeries>>;
+  jobless: JoblessSeries;
 }
 
 function renderStoryContent(
@@ -125,29 +124,31 @@ function renderStoryContent(
   data: StoryData,
 ): { chart: React.ReactNode; stats: React.ReactNode } {
   switch (slug) {
-    case 'sheep-index':
+    case 'jobless-rate':
       return {
-        chart: <SheepChart points={data.sheep.points} />,
+        chart: <JoblessChart points={data.jobless.points} />,
         stats: (
           <dl className="grid gap-6 py-[var(--spacing-2xl)] sm:grid-cols-3">
             <StatCard
-              label={`Sheep right now (${data.sheep.latest.year})`}
-              value={formatMillionsSheep(data.sheep.latest.sheep)}
-              accent="amber"
-              testId="sheep-latest"
-              dataValue={data.sheep.latest.sheep}
+              label={`Rate in ${data.jobless.latestLabel}`}
+              value={formatPercent(data.jobless.latest.value)}
+              accent="teal"
+              testId="jobless-latest"
+              dataValue={data.jobless.latest.value}
             />
             <StatCard
-              label={`Peak flock (${data.sheep.peak.year})`}
-              value={formatMillionsSheep(data.sheep.peak.sheep)}
-              accent="amber"
+              label={`Peak, ${data.jobless.peakLabel}`}
+              value={formatPercent(data.jobless.peak.value)}
+              accent="teal"
+              testId="jobless-peak"
+              dataValue={data.jobless.peak.value}
             />
             <StatCard
-              label="Change since peak"
-              value={`${Math.round(data.sheep.changeFromPeakPercent)}%`}
-              accent="amber"
-              testId="sheep-change"
-              dataValue={Math.round(data.sheep.changeFromPeakPercent)}
+              label="Change since the peak"
+              value={formatPointChange(data.jobless.changeFromPeak)}
+              accent="teal"
+              testId="jobless-change"
+              dataValue={data.jobless.changeFromPeak}
             />
           </dl>
         ),

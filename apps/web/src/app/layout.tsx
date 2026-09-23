@@ -1,5 +1,5 @@
-import { cn } from '@nzlab/ui';
-import '@nzlab/ui/styles';
+import { cn } from '@uslab/ui';
+import '@uslab/ui/styles';
 import type { Metadata } from 'next';
 import { Geist } from 'next/font/google';
 
@@ -12,8 +12,8 @@ import './globals.css';
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
-  title: 'nz-data-lab',
-  description: 'Small experiments digging through New Zealand public data.',
+  title: 'usa-data-lab',
+  description: 'Small experiments digging through US public data.',
 };
 
 export default function RootLayout({
@@ -22,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>): React.ReactElement {
   return (
-    <html lang="en-NZ" suppressHydrationWarning className={cn('font-sans', geist.variable)}>
+    <html lang="en-US" suppressHydrationWarning className={cn('font-sans', geist.variable)}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: getDarkThemeInitScript() }} />
       </head>

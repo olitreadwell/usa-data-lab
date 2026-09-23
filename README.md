@@ -1,43 +1,46 @@
-# USA Data Lab (scaffold)
-
-Derived from nz-data-lab. Source adapters, front-page visualisations, and the 30-minute ship loop are being ported to USA public data.
-
-# nz-data-lab
+# usa-data-lab
 
 Example site for
-[nz-open-data-connectors](https://github.com/olitreadwell/nz-open-data-connectors).
-One microsite, the sheep index, showing the full pipeline from a New Zealand
+[usa-open-data-connectors](https://github.com/olitreadwell/usa-open-data-connectors).
+One microsite, the jobless rate, showing the full pipeline from a US
 public-data connector to a deployed static chart.
 
 ## The microsite
 
-- **The sheep index**: New Zealand's national flock has nearly halved since
-  1994, from 49.5 million sheep to 23.3 million. Data from the Stats NZ
-  Aotearoa Data Explorer, fetched at deploy time.
+- **The jobless rate**: the national unemployment rate, month by month since
+  January 2006. It peaked at 14.8 percent in April 2020 and fell to 3.4
+  percent by April 2023. October 2025 is missing, because the agency could
+  not publish it during the 2025 lapse in appropriations. Data from the
+  Bureau of Labor Statistics public data API, fetched at deploy time.
 
 ## What this example shows
 
-- `apps/web/src/lib/sheep-data.ts` calls `createStatsNzClient` from
-  `@nzlab/stats-nz` to pull table AGR_AGR_003 (Livestock Numbers by Regional
-  Council) at build time.
-- The build falls back to a committed CSV fixture when the Stats NZ gateway
-  blocks the build runner, so the static export always succeeds.
-- `SheepChart` renders the series with Recharts; the page and chart have unit
-  tests, and the e2e suite asserts a plausible live sheep count.
+- `apps/web/src/lib/jobless-data.ts` calls `parseBlsObservations` from
+  `@uslab/usa-sources` to read series `LNS14000000`, in two requests because
+  the API caps one request at ten years.
+- The build falls back to a committed snapshot when the API is rate limited
+  or blocked, so the static export always succeeds.
+- `JoblessChart` renders the monthly line with Recharts and breaks the line
+  at the month that was never published; the page and chart have unit tests,
+  and the e2e suite asserts a plausible live rate and the pandemic peak.
 
 ## Connectors wiring
 
-The site uses one package from the connectors repo, `@nzlab/stats-nz`,
-vendored under `packages/stats-nz`. npm git dependencies cannot target a
+The site uses one package from the connectors repo, `@uslab/usa-sources`,
+vendored under `packages/usa-sources`. npm git dependencies cannot target a
 subpackage inside a workspace monorepo, so the package is copied here and kept
 in sync with a script:
 
 ```bash
-node scripts/sync-connectors.mjs                     # uses ../nz-open-data-connectors
+node scripts/sync-connectors.mjs                     # uses ../usa-open-data-connectors
 node scripts/sync-connectors.mjs --from /path/to/repo
 ```
 
-Edit `packages/stats-nz` only by syncing from the connectors repo.
+The script renames the `@nzlab` scope to `@uslab`, strips the `.js` extension
+from relative imports, and points the package entry at `src/`. All three happen
+in the script rather than by hand, so a sync is reproducible.
+
+Edit `packages/usa-sources` only by syncing from the connectors repo.
 
 ## Stack
 
@@ -61,3 +64,6 @@ npm test
 npm run lint
 npm run build
 ```
+
+Playwright serves the built `out/` directory on port 3000. Set `E2E_PORT` to run
+the suite beside another dev server.

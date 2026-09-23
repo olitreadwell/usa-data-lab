@@ -31,7 +31,8 @@
     },
     "test:e2e": {
       "dependsOn": ["build"],
-      "cache": false
+      "cache": false,
+      "env": ["E2E_PORT", "BASE_URL"]
     },
     "test:a11y": {
       "dependsOn": ["^build"]

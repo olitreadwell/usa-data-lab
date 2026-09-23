@@ -22,67 +22,99 @@ vi.mock('next/navigation', () => ({
   },
 }));
 
-vi.mock('@/lib/sheep-data', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/lib/sheep-data')>();
+vi.mock('@/lib/jobless-data', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/jobless-data')>();
   return {
     ...actual,
-    fetchSheepSeries: vi.fn().mockResolvedValue({
+    fetchJoblessSeries: vi.fn().mockResolvedValue({
       points: [
-        { year: 1994, sheep: 49466054 },
-        { year: 2025, sheep: 23252463 },
+        { label: 'Mar 2020', value: 4.4 },
+        { label: 'Apr 2020', value: 14.8 },
+        { label: 'Oct 2025', value: null },
       ],
-      first: { year: 1994, sheep: 49466054 },
-      peak: { year: 1994, sheep: 49466054 },
-      latest: { year: 2025, sheep: 23252463 },
-      changeFromFirstPercent: -53,
-      changeFromPeakPercent: -53,
+      missingMonthLabels: ['Oct 2025'],
+      latest: {
+        seriesId: 'LNS14000000',
+        year: 2025,
+        period: 'M12',
+        periodName: 'December',
+        value: 4.4,
+      },
+      peak: {
+        seriesId: 'LNS14000000',
+        year: 2020,
+        period: 'M04',
+        periodName: 'April',
+        value: 14.8,
+      },
+      lowest: {
+        seriesId: 'LNS14000000',
+        year: 2023,
+        period: 'M04',
+        periodName: 'April',
+        value: 3.4,
+      },
+      changeFromPeak: -10.4,
+      latestLabel: 'Dec 2025',
+      peakLabel: 'Apr 2020',
+      lowestLabel: 'Apr 2023',
     }),
   };
 });
 
 describe('MicrositePage', () => {
-  it('renders the sheep story with narrative, chart, and sources', async () => {
+  it('renders the jobless-rate story with narrative, chart, and sources', async () => {
     const stream = await renderToReadableStream(
-      <MicrositePage params={Promise.resolve(paramsFor('sheep-index'))} />,
+      <MicrositePage params={Promise.resolve(paramsFor('jobless-rate'))} />,
     );
     const html = await new Response(stream).text();
-    expect(html).toContain('national animal is in freefall');
-    expect(html).toContain('70 million sheep');
+    expect(html).toContain('peaked at 14.8 percent in April 2020');
+    expect(html).toContain('October 2025 is empty');
     expect(html).toContain('Key facts');
     expect(html).toContain('How to read this chart');
     expect(html).toContain('Open source data');
     expect(html).toContain('Sources and further reading');
-    expect(html).toContain('Sheep number falls to six for each person');
+    expect(html).toContain('Unemployment rate, series LNS14000000');
     expect(html).toContain('aria-label="Breadcrumb"');
-    expect(html).toContain('href="/agriculture"');
-    expect(html).toContain('Sheep index');
+    expect(html).toContain('href="/economy"');
+    expect(html).toContain('Jobless rate');
     expect(html.match(/<h1[^>]*>/g) ?? []).toHaveLength(1);
+  });
+
+  it('reads the headline numbers out of the series', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('jobless-rate'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain('4.4%');
+    expect(html).toContain('14.8%');
+    expect(html).toContain('-10.4 pts');
   });
 
   it('renders exactly one h1 with the microsite title before any h2', async () => {
     const stream = await renderToReadableStream(
-      <MicrositePage params={Promise.resolve(paramsFor('sheep-index'))} />,
+      <MicrositePage params={Promise.resolve(paramsFor('jobless-rate'))} />,
     );
     const html = await new Response(stream).text();
     const h1s = html.match(/<h1[^>]*>(.*?)<\/h1>/g) ?? [];
     expect(h1s).toHaveLength(1);
-    expect(h1s[0]).toContain('national animal is in freefall');
+    expect(h1s[0]).toContain('peaked at 14.8 percent in April 2020');
     const headingIndexes = ['<h1', '<h2', '<h3', '<h4', '<h5', '<h6']
       .map((tag) => html.indexOf(tag))
       .filter((index) => index !== -1);
     expect(Math.min(...headingIndexes)).toBe(html.indexOf('<h1'));
   });
 
-  it('returns a unique document title for the sheep microsite', async () => {
+  it('returns a unique document title for the jobless-rate microsite', async () => {
     await expect(
-      generateMetadata({ params: Promise.resolve(paramsFor('sheep-index')) }),
+      generateMetadata({ params: Promise.resolve(paramsFor('jobless-rate')) }),
     ).resolves.toEqual({
-      title: 'Sheep index - nz-data-lab',
+      title: 'Jobless rate - usa-data-lab',
       description: expect.any(String),
       openGraph: {
-        title: 'Sheep index - nz-data-lab',
+        title: 'Jobless rate - usa-data-lab',
         description: expect.any(String),
-        url: '/agriculture/sheep-index/',
+        url: '/economy/jobless-rate/',
         type: 'article',
       },
     });
@@ -91,7 +123,7 @@ describe('MicrositePage', () => {
   it('returns a generic title for an unknown microsite', async () => {
     await expect(generateMetadata({ params: Promise.resolve(paramsFor('nope')) })).resolves.toEqual(
       {
-        title: 'nz-data-lab',
+        title: 'usa-data-lab',
       },
     );
   });

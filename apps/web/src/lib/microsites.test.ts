@@ -58,19 +58,19 @@ describe('relatedMicrositesFor', () => {
   });
 
   it('returns no related stories while only one microsite is published', () => {
-    const sheep = MICROSITES.find((microsite) => microsite.slug === 'sheep-index');
-    if (sheep === undefined) {
-      throw new Error('sheep-index missing');
+    const jobless = MICROSITES.find((microsite) => microsite.slug === 'jobless-rate');
+    if (jobless === undefined) {
+      throw new Error('jobless-rate missing');
     }
-    expect(relatedMicrositesFor(sheep)).toHaveLength(0);
+    expect(relatedMicrositesFor(jobless)).toHaveLength(0);
   });
 });
 
 describe('freshnessLabelFor', () => {
   it('labels deploy-time fetches', () => {
-    const fetched = MICROSITES.find((microsite) => microsite.slug === 'sheep-index');
+    const fetched = MICROSITES.find((microsite) => microsite.slug === 'jobless-rate');
     if (fetched === undefined) {
-      throw new Error('sheep-index missing');
+      throw new Error('jobless-rate missing');
     }
     expect(freshnessLabelFor(fetched)).toContain('deploy time');
   });

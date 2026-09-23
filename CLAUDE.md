@@ -1,7 +1,8 @@
-# nz-data-lab
+# usa-data-lab
 
-Small experiments digging through New Zealand public data (Stats NZ, Hansard
-transcripts, and whatever else turns up something weird, funny, or surprising). Built
+Small experiments digging through US public data (Bureau of Labor Statistics,
+Census, USGS, and whatever else turns up something weird, funny, or
+surprising). Built
 on a Next.js 16 + Turborepo monorepo template (originally numeralstudio/template) —
 **npm + Turborepo + Next.js 16 + React 19.2 + TypeScript + Tailwind 4 + SCSS +
 shadcn/ui + Zod + Lucide**.
@@ -26,9 +27,9 @@ See `AGENTS.md` for global agent rules and quality gates.
 
 ## Package structure
 
-- `apps/web` — Next.js app (`@nzlab/web`)
+- `apps/web` — Next.js app (`@uslab/web`)
 - `packages/ui` — Shared layout primitives + canonical `Button` + shadcn/ui scaffold +
-  style system (`@nzlab/ui`)
+  style system (`@uslab/ui`)
 - `packages/config-typescript` — Shared TypeScript configs
 - `packages/config-eslint` — Shared ESLint configs (flat config, ESLint 9)
 - `packages/config-tailwind` — Shared Tailwind theme + design tokens
@@ -98,10 +99,10 @@ see the comment atop `packages/ui/src/components/ui/button.tsx` for why a shadcn
 - **`_typography.scss`** — `.numeral-heading-*`, `.numeral-paragraph-*`,
   `.numeral-text-*` classes
 
-## What's in `@nzlab/ui`
+## What's in `@uslab/ui`
 
 ```ts
-import { Box, Button, cn, Container, Flex, Grid, HStack, Section, Stack, VStack } from '@nzlab/ui';
+import { Box, Button, cn, Container, Flex, Grid, HStack, Section, Stack, VStack } from '@uslab/ui';
 ```
 
 That's the public surface. We don't pre-ship dialogs, dropdowns, tables, etc as public

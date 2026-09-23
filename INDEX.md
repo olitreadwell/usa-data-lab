@@ -1,9 +1,33 @@
-# Experiment index
+# Index
 
-One line per published experiment. The deployed site is a single page: the
-sheep index lives on the home page (`apps/web/src/app/page.tsx`), and each
-experiment's writeup lives under `docs/experiments/<slug>/`.
+A map of this repo for anyone (or any agent) arriving cold.
 
-Format: `- [slug](docs/experiments/<slug>)` (status) one-line pitch
+## The site
 
-- [sheep-index](docs/experiments/sheep-index) (alive) New Zealand's sheep flock has nearly halved since 1994 (49.5m to 23.3m), from the Stats NZ Aotearoa Data Explorer.
+`usa-data-lab` is a static Next.js export of small experiments on US public
+data. One microsite is published: the jobless rate, a monthly chart of the
+national unemployment rate. The home page is
+(`apps/web/src/app/page.tsx`), and each story lives at
+`/<category-slug>/<slug>/`.
+
+- [jobless-rate](docs/experiments/jobless-rate) (alive) The national
+  unemployment rate month by month since January 2006, from the Bureau of
+  Labor Statistics public data API.
+
+## Where things are
+
+- `apps/web/src/lib/microsites.ts` - the story corpus. Copy, categories, and
+  source citations for every microsite, published or not.
+- `apps/web/src/lib/jobless-data.ts` - the fetch and transform layer for the
+  jobless-rate story. Live read at build time, committed snapshot as fallback.
+- `apps/web/src/components/` - chart and page components, each with unit tests.
+- `packages/usa-sources/` - the vendored connectors package. Never edit by
+  hand; run `node scripts/sync-connectors.mjs`.
+- `docs/experiments/<slug>/` - one folder per experiment: the pitch, the data
+  source, and a verdict on whether it worked.
+- `skills/` - the loop skills this repo runs.
+
+## Checks
+
+`npm run check` runs format, lint, type-check, tests with coverage, build,
+smoke, e2e, and the internal link check.

@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Container, Stack } from '@nzlab/ui';
+import { Button, Container, Stack } from '@uslab/ui';
 import Link from 'next/link';
 
 interface ErrorPageProps {

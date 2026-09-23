@@ -11,3 +11,6 @@ next-env.d.ts
 *.yml
 *.yaml
 src/generated
+
+# Large committed data snapshots; kept compact and never reformatted.
+apps/web/src/fixtures

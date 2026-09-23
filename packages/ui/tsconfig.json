@@ -1,5 +1,5 @@
 {
-  "extends": "@nzlab/config-typescript/library.json",
+  "extends": "@uslab/config-typescript/library.json",
   "compilerOptions": {
     "rootDir": ".",
     "paths": {

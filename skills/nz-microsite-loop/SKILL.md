@@ -234,4 +234,4 @@ when no wrapper is already running (check the lock file first).
 - Did the chart type repeat? Did the copy need rewriting?
 - Did any reference URL 404 after deploy?
 - Did the worktree/branch flow add friction? Would a script help?
-- Is there a new adapter or fixture worth adding to `@nzlab/nz-sources`?
+- Is there a new adapter or fixture worth adding to `@uslab/nz-sources`?

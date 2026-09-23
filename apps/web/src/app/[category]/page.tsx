@@ -1,4 +1,4 @@
-import { Container, Stack } from '@nzlab/ui';
+import { Container, Stack } from '@uslab/ui';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
@@ -29,14 +29,14 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   const { category } = await params;
   const categoryLabel = categoryLabelForSlug(category);
   if (categoryLabel === undefined) {
-    return { title: 'nz-data-lab' };
+    return { title: 'usa-data-lab' };
   }
   const categoryDescription = CATEGORY_DETAILS[categoryLabel];
   return {
-    title: `${categoryLabel} - nz-data-lab`,
+    title: `${categoryLabel} - usa-data-lab`,
     description: categoryDescription,
     openGraph: {
-      title: `${categoryLabel} - nz-data-lab`,
+      title: `${categoryLabel} - usa-data-lab`,
       description: categoryDescription,
       url: `/${category}/`,
       type: 'website',

@@ -8,7 +8,7 @@ vi.mock('next/font/google', () => ({
 }));
 
 describe('RootLayout', () => {
-  it('renders the html element with lang="en-NZ"', async () => {
+  it('renders the html element with lang="en-US"', async () => {
     const stream = await renderToReadableStream(
       <RootLayout>
         <p>content</p>
@@ -16,7 +16,7 @@ describe('RootLayout', () => {
     );
     const html = await new Response(stream).text();
 
-    expect(html).toContain('<html lang="en-NZ"');
+    expect(html).toContain('<html lang="en-US"');
   });
 
   it('renders a single main landmark with id="main" for the skip link', async () => {

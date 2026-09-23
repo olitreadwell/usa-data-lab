@@ -3,9 +3,9 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { HIDDEN_MICROSITES, withHiddenMicrositesRemoved } from './hidden-microsites';
 
 const MICROSITES_FIXTURE = [
-  { slug: 'sheep-index' },
-  { slug: 'shake-index' },
-  { slug: 'deer-boom-bust' },
+  { slug: 'jobless-rate' },
+  { slug: 'flow-index' },
+  { slug: 'rain-index' },
 ];
 
 beforeEach(() => {
@@ -18,14 +18,14 @@ describe('withHiddenMicrositesRemoved', () => {
   });
 
   it('drops hidden microsites', () => {
-    HIDDEN_MICROSITES.push('shake-index');
+    HIDDEN_MICROSITES.push('flow-index');
     const visible = withHiddenMicrositesRemoved(MICROSITES_FIXTURE);
-    expect(visible.map((microsite) => microsite.slug)).toEqual(['sheep-index', 'deer-boom-bust']);
+    expect(visible.map((microsite) => microsite.slug)).toEqual(['jobless-rate', 'rain-index']);
   });
 
   it('removes every listed slug from the site list', () => {
-    HIDDEN_MICROSITES.push('shake-index', 'sheep-index');
+    HIDDEN_MICROSITES.push('flow-index', 'jobless-rate');
     const visible = withHiddenMicrositesRemoved(MICROSITES_FIXTURE);
-    expect(visible.map((microsite) => microsite.slug)).toEqual(['deer-boom-bust']);
+    expect(visible.map((microsite) => microsite.slug)).toEqual(['rain-index']);
   });
 });

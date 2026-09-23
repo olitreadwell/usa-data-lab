@@ -9,7 +9,7 @@ expect.extend(toHaveNoViolations);
 describe('SiteFooter', () => {
   it('renders the mission line', () => {
     render(<SiteFooter />);
-    expect(screen.getByText(/small experiments in New Zealand public data/i)).toBeInTheDocument();
+    expect(screen.getByText(/small experiments in US public data/i)).toBeInTheDocument();
   });
 
   it('has no accessibility violations', async () => {

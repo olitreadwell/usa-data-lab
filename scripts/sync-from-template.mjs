@@ -10,7 +10,7 @@
 //   node scripts/sync-from-template.mjs --repo ../x    # target another repo
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
-import { mkdir, mkdtemp, readFile, writeFile, copyFile, readdir, rm } from 'node:fs/promises';
+import { copyFile, mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 
@@ -42,7 +42,7 @@ function defaultBranch() {
   try {
     return run(['git', 'symbolic-ref', '--short', 'refs/remotes/origin/HEAD']).replace(
       'origin/',
-      ''
+      '',
     );
   } catch {
     return 'main';
