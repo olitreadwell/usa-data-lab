@@ -2,22 +2,29 @@
 
 Example site for
 [usa-open-data-connectors](https://github.com/olitreadwell/usa-open-data-connectors).
-One microsite, the jobless rate, showing the full pipeline from a US
-public-data connector to a deployed static chart.
+Two microsites showing the full pipeline from a US public-data connector to a
+deployed static chart.
 
-## The microsite
+## The microsites
 
 - **The jobless rate**: the national unemployment rate, month by month since
   January 2006. It peaked at 14.8 percent in April 2020 and fell to 3.4
   percent by April 2023. October 2025 is missing, because the agency could
   not publish it during the 2025 lapse in appropriations. Data from the
   Bureau of Labor Statistics public data API, fetched at deploy time.
+- **Hawaii earthquakes**: 264 earthquakes at magnitude 2.5 or higher around
+  the Hawaiian islands in 2025. Two thirds of them stayed below magnitude 3,
+  the strongest was an M4.41 on 15 March, and the deepest was 59.8 km down.
+  Data from the USGS earthquake catalogue, read at deploy time.
 
 ## What this example shows
 
 - `apps/web/src/lib/jobless-data.ts` calls `parseBlsObservations` from
   `@uslab/usa-sources` to read series `LNS14000000`, in two requests because
   the API caps one request at ten years.
+- `apps/web/src/lib/hawaii-quakes-data.ts` calls `parseUsgsEarthquakes` for one
+  closed year, drops the non-tectonic rows the catalogue mixes in, and counts
+  what is left into half-magnitude bands.
 - The build falls back to a committed snapshot when the API is rate limited
   or blocked, so the static export always succeeds.
 - `JoblessChart` renders the monthly line with Recharts and breaks the line
