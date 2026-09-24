@@ -52,8 +52,9 @@ export default function AboutPage(): React.ReactElement {
         <section className="space-y-3">
           <h2 className="numeral-heading-lg">The jobless rate</h2>
           <p className="numeral-paragraph-md">
-            The first experiment charts the national unemployment rate month by month since January
-            2006. It peaked at 14.8 percent in April 2020 and fell to 3.4 percent by April 2023.
+            The first experiment charts the national unemployment rate month by month over the last
+            twenty years. It peaked at 14.8 percent in April 2020 and fell to 3.4 percent by April
+            2023.
           </p>
           <p className="numeral-paragraph-md">
             The figures come from the Bureau of Labor Statistics public data API, which is keyless

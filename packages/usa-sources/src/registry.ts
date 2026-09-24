@@ -1,4 +1,5 @@
 import { blsUnemploymentAdapter } from './blsSeries';
+import { cdcCountyObesityAdapter } from './cdcCountyObesity';
 import type { UsDataAdapter, UsFetchOptions, UsSourceProbe } from './types';
 import { usgsHawaiiEarthquakesAdapter } from './usgsEarthquakes';
 
@@ -6,6 +7,7 @@ import { usgsHawaiiEarthquakesAdapter } from './usgsEarthquakes';
 export const US_DATA_SOURCES: UsDataAdapter<unknown>[] = [
   blsUnemploymentAdapter,
   usgsHawaiiEarthquakesAdapter,
+  cdcCountyObesityAdapter,
 ];
 
 /** Looks up a source adapter by id. */

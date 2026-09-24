@@ -2,10 +2,10 @@
 
 # usa-data-lab
 
-Example site for `usa-open-data-connectors`: two microsites (the jobless rate
-and the Hawaii earthquakes) showing the full pipeline from a US public-data
-connector to a deployed static chart. See root `README.md` for the mission and
-package structure.
+Example site for `usa-open-data-connectors`: three microsites (the jobless
+rate, the Hawaii earthquakes, and adult obesity by county) showing the full
+pipeline from a US public-data connector to a deployed static chart. See root
+`README.md` for the mission and package structure.
 
 ## Stack (this is the real one, verify against `package.json` before trusting any
 

@@ -169,7 +169,7 @@ export const MICROSITES: MicrositeConfig[] = withHiddenMicrositesRemoved<Microsi
     description:
       'The monthly national unemployment rate has run from 14.8 percent in April 2020 down to 3.4 percent in April 2023. Twenty years of monthly figures come from the Bureau of Labor Statistics, and one month in the series does not exist.',
     paragraphs: [
-      'The Bureau of Labor Statistics runs the Current Population Survey and publishes the rate every month. The series here starts in January 2006, so it covers the 2008 recession, the pandemic, and the tight labour market that followed.',
+      'The Bureau of Labor Statistics runs the Current Population Survey and publishes the rate every month. The chart reads the last twenty years, up to the newest month the agency has published, so it still holds the 2008 recession and the pandemic.',
       'October 2025 is empty. The agency marked that month unavailable because of the 2025 lapse in appropriations, and it carried that footnote through in place of a number. The chart leaves the month blank rather than drawing through it.',
       'The rate only counts people who are out of work and actively looking. People who have stopped looking are not in the number, which is why the rate can fall while the share of adults in work also falls.',
     ],
@@ -239,6 +239,52 @@ export const MICROSITES: MicrositeConfig[] = withHiddenMicrositesRemoved<Microsi
       {
         label: 'ANSS Comprehensive Earthquake Catalog (ComCat)',
         url: 'https://earthquake.usgs.gov/data/comcat/',
+        kind: 'data',
+      },
+    ],
+  },
+  {
+    slug: 'cdc-county-obesity',
+    keyFacts: [
+      'The lowest estimate in the release is 16.7 percent in Boulder County, Colorado.',
+      'The highest is 52.9 percent in Perry County, Alabama.',
+      "The median county sits at 37.9 percent, above the release's own national figure of 32.8 percent.",
+      '2,502 of the 2,956 counties come in above that national figure.',
+      'The 100 counties with the highest rates hold 0.8 percent of the people counted here.',
+    ],
+    howToRead:
+      'Each bar counts the counties inside a two-point band of prevalence, so the tallest bar is the band around the median county; the dashed lines mark the national figure and the median.',
+    sourceUrl: 'https://data.cdc.gov/d/swc5-untb',
+    label: 'County obesity',
+    eyebrow: 'adult obesity by county',
+    title: 'Adult obesity in US counties runs from 16.7 percent to 52.9 percent.',
+    description:
+      "The CDC puts the lowest county estimate in Boulder County, Colorado at 16.7 percent and the highest in Perry County, Alabama at 52.9 percent. The median county sits at 37.9 percent, and most counties are above the release's own national figure of 32.8 percent.",
+    paragraphs: [
+      'PLACES is the CDC set of county-level health estimates. Each figure is built from the Behavioral Risk Factor Surveillance System survey and census population counts, so a county of a few thousand people gets a number without being surveyed on its own. This page reads the 2025 release, which uses the 2023 survey, and keeps the crude prevalence rows for obesity among adults.',
+      'The counties with the highest rates are the smallest ones. The median county sits at 37.9 percent, while the same estimates weighted by population come to 33.3 percent, half a point from the national row the release publishes at 32.8 percent. The 100 counties with the highest rates hold 0.8 percent of the people counted here.',
+      'Two things are missing. The release carries no obesity estimate for Kentucky or Pennsylvania, and Loving County in Texas arrives with a blank value on a population of 43, so the counts here cover 2,956 counties across 48 states and the District of Columbia. These are model-based estimates rather than measured counts, which makes them useful for comparing places and unsuitable for judging whether a local program worked.',
+    ],
+    accent: 'rose',
+    dataSource: 'Centers for Disease Control (CDC)',
+    chartType: 'Histogram',
+    category: 'Health',
+    dataNote:
+      'Data: CDC PLACES, Local Data for Better Health county data, 2025 release, read at deploy time without a key. The query asks the release for measure OBESITY at crude prevalence, which comes back as about three thousand county rows in one request. The estimates are model-based, built from the 2023 Behavioral Risk Factor Surveillance System survey and the Census Bureau county population estimates for 2023. Rows without a value are dropped, the release row for the United States is kept apart from the counties, and Kentucky and Pennsylvania carry no obesity rows at all in this release. If the endpoint is slow or unreachable at build time the page falls back to the committed snapshot in apps/web/src/fixtures and says so in the build log.',
+    references: [
+      {
+        label: 'PLACES: Local Data for Better Health, county data, 2025 release (CDC)',
+        url: 'https://data.cdc.gov/d/swc5-untb',
+        kind: 'data',
+      },
+      {
+        label: 'The resource endpoint this site reads',
+        url: 'https://data.cdc.gov/resource/swc5-untb.json',
+        kind: 'data',
+      },
+      {
+        label: 'PLACES program and methods (CDC)',
+        url: 'https://www.cdc.gov/places/index.html',
         kind: 'data',
       },
     ],

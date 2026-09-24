@@ -97,6 +97,28 @@ vi.mock('@/lib/hawaii-quakes-data', async (importOriginal) => {
   };
 });
 
+vi.mock('@/lib/cdc-obesity-data', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/cdc-obesity-data')>();
+  return {
+    ...actual,
+    fetchCdcObesityStory: vi.fn().mockResolvedValue({
+      bands: [
+        { label: '16%', rangeLabel: '16 up to 18 percent', lower: 16, upper: 18, count: 2 },
+        { label: '36%', rangeLabel: '36 up to 38 percent', lower: 36, upper: 38, count: 514 },
+        { label: '52%', rangeLabel: '52 up to 54 percent', lower: 52, upper: 54, count: 3 },
+      ],
+      countyCount: 2956,
+      lowest: { countyName: 'Boulder', stateAbbr: 'CO', percent: 16.7, population: 326831 },
+      highest: { countyName: 'Perry', stateAbbr: 'AL', percent: 52.9, population: 7738 },
+      medianPercent: 37.9,
+      weightedPercent: 33.28,
+      nationalPercent: 32.8,
+      aboveNationalCount: 2502,
+      dataYear: 2023,
+    }),
+  };
+});
+
 describe('MicrositePage', () => {
   it('renders the jobless-rate story with narrative, chart, and sources', async () => {
     const stream = await renderToReadableStream(
@@ -188,6 +210,36 @@ describe('MicrositePage', () => {
         title: 'Hawaii earthquakes - usa-data-lab',
         description: expect.any(String),
         url: '/environment/hawaii-quakes/',
+        type: 'article',
+      },
+    });
+  });
+
+  it('renders the cdc-county-obesity story with its chart, stat cards, and sources', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('cdc-county-obesity'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain('runs from 16.7 percent to 52.9 percent');
+    expect(html).toContain('href="/health"');
+    expect(html).toContain('2,956');
+    expect(html).toContain('37.9%');
+    expect(html).toContain('Counties above 32.8%');
+    expect(html).toContain('PLACES: Local Data for Better Health, county data, 2025 release (CDC)');
+    expect(html).toContain('aria-label="Breadcrumb"');
+    expect(html.match(/<h1[^>]*>/g) ?? []).toHaveLength(1);
+  });
+
+  it('returns a unique document title for the cdc-county-obesity microsite', async () => {
+    await expect(
+      generateMetadata({ params: Promise.resolve(paramsFor('cdc-county-obesity')) }),
+    ).resolves.toEqual({
+      title: 'County obesity - usa-data-lab',
+      description: expect.any(String),
+      openGraph: {
+        title: 'County obesity - usa-data-lab',
+        description: expect.any(String),
+        url: '/health/cdc-county-obesity/',
         type: 'article',
       },
     });

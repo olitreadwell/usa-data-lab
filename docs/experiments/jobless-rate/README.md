@@ -39,5 +39,5 @@ missing month is the most interesting thing on the page.
 ## What it looks like
 
 Three stat cards (the latest month, the peak, the change since the peak) above
-a monthly line chart from January 2006, with the full month-by-month table
-behind a disclosure and a data-source footnote.
+a monthly line chart covering the last twenty years, with the full
+month-by-month table behind a disclosure and a data-source footnote.

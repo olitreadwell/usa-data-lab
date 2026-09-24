@@ -7,7 +7,15 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { buildJoblessSeries, fetchJoblessSeries, monthLabel } from './jobless-data';
+import {
+  buildJoblessSeries,
+  fetchJoblessSeries,
+  joblessWindowYears,
+  monthLabel,
+} from './jobless-data';
+
+// A fixed day inside the window, so the tests do not change with the clock.
+const WINDOW_NOW = new Date('2026-09-25T00:00:00Z');
 
 const FIXTURE_PATH = path.join(process.cwd(), 'src/fixtures/bls-unemployment-rate.json');
 const RAW_FIXTURE = readFileSync(FIXTURE_PATH, 'utf8');
@@ -19,9 +27,9 @@ const PARSED = buildBlsSeries(
 describe('buildJoblessSeries', () => {
   it('lays out every month between the first and the last', () => {
     const series = buildJoblessSeries(PARSED);
-    expect(series.points).toHaveLength(240);
+    expect(series.points).toHaveLength(248);
     expect(series.points[0]).toEqual({ label: 'Jan 2006', value: 4.7 });
-    expect(series.points[series.points.length - 1]).toEqual({ label: 'Dec 2025', value: 4.4 });
+    expect(series.points[series.points.length - 1]).toEqual({ label: 'Aug 2026', value: 4.1 });
   });
 
   it('leaves the unpublished month empty rather than dropping it', () => {
@@ -38,8 +46,8 @@ describe('buildJoblessSeries', () => {
     expect(series.peak.value).toBe(14.8);
     expect(series.lowestLabel).toBe('Apr 2023');
     expect(series.lowest.value).toBe(3.4);
-    expect(series.latestLabel).toBe('Dec 2025');
-    expect(series.changeFromPeak).toBeCloseTo(-10.4, 5);
+    expect(series.latestLabel).toBe('Aug 2026');
+    expect(series.changeFromPeak).toBeCloseTo(-10.7, 5);
   });
 
   it('throws when there is nothing to chart', () => {
@@ -53,6 +61,22 @@ describe('monthLabel', () => {
   it('shortens the month name', () => {
     expect(monthLabel({ year: 2020, periodName: 'April' })).toBe('Apr 2020');
     expect(monthLabel({ year: 2025, periodName: 'September' })).toBe('Sep 2025');
+  });
+});
+
+describe('joblessWindowYears', () => {
+  it('reads the twenty years ending with the current one', () => {
+    expect(joblessWindowYears(new Date('2026-09-25T00:00:00Z'))).toEqual({
+      startYear: 2007,
+      endYear: 2026,
+    });
+  });
+
+  it('rolls forward with the calendar', () => {
+    expect(joblessWindowYears(new Date('2027-01-02T00:00:00Z'))).toEqual({
+      startYear: 2008,
+      endYear: 2027,
+    });
   });
 });
 
@@ -71,18 +95,22 @@ describe('fetchJoblessSeries', () => {
         return new Response(RAW_FIXTURE, { status: 200 });
       }),
     );
-    const series = await fetchJoblessSeries();
+    const series = await fetchJoblessSeries(WINDOW_NOW);
     expect(seen).toHaveLength(2);
-    expect(seen[0]).toContain('startyear=2006');
-    expect(seen[1]).toContain('startyear=2016');
-    expect(series.latest.value).toBe(4.4);
+    expect(seen[0]).toContain('startyear=2007');
+    expect(seen[0]).toContain('endyear=2016');
+    expect(seen[1]).toContain('startyear=2017');
+    expect(seen[1]).toContain('endyear=2026');
+    expect(series.latestLabel).toBe('Aug 2026');
+    expect(series.latest.value).toBe(4.1);
   });
 
   it('falls back to the committed snapshot when the fetch rejects', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('offline')));
-    const series = await fetchJoblessSeries();
-    expect(series.points).toHaveLength(240);
+    const series = await fetchJoblessSeries(WINDOW_NOW);
+    expect(series.points).toHaveLength(236);
+    expect(series.points[0]).toEqual({ label: 'Jan 2007', value: 4.6 });
     expect(series.peak.value).toBe(14.8);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining('unemployment snapshot'));
   });
@@ -90,7 +118,7 @@ describe('fetchJoblessSeries', () => {
   it('falls back on a non-200 reply', async () => {
     vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response('nope', { status: 429 })));
-    const series = await fetchJoblessSeries();
-    expect(series.latestLabel).toBe('Dec 2025');
+    const series = await fetchJoblessSeries(WINDOW_NOW);
+    expect(series.latestLabel).toBe('Aug 2026');
   });
 });

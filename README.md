@@ -2,13 +2,13 @@
 
 Example site for
 [usa-open-data-connectors](https://github.com/olitreadwell/usa-open-data-connectors).
-Two microsites showing the full pipeline from a US public-data connector to a
-deployed static chart.
+Three microsites showing the full pipeline from a US public-data connector to
+a deployed static chart.
 
 ## The microsites
 
-- **The jobless rate**: the national unemployment rate, month by month since
-  January 2006. It peaked at 14.8 percent in April 2020 and fell to 3.4
+- **The jobless rate**: the national unemployment rate, month by month over
+  the last twenty years. It peaked at 14.8 percent in April 2020 and fell to 3.4
   percent by April 2023. October 2025 is missing, because the agency could
   not publish it during the 2025 lapse in appropriations. Data from the
   Bureau of Labor Statistics public data API, fetched at deploy time.
@@ -16,6 +16,11 @@ deployed static chart.
   the Hawaiian islands in 2025. Two thirds of them stayed below magnitude 3,
   the strongest was an M4.41 on 15 March, and the deepest was 59.8 km down.
   Data from the USGS earthquake catalogue, read at deploy time.
+- **County obesity**: 2,956 US counties with an estimated share of adults
+  living with obesity, from 16.7 percent in Boulder County, Colorado to 52.9
+  percent in Perry County, Alabama. The median county sits at 37.9 percent,
+  above the release's own national figure of 32.8 percent. Data from the CDC
+  PLACES county release, read at deploy time.
 
 ## What this example shows
 
@@ -25,6 +30,9 @@ deployed static chart.
 - `apps/web/src/lib/hawaii-quakes-data.ts` calls `parseUsgsEarthquakes` for one
   closed year, drops the non-tectonic rows the catalogue mixes in, and counts
   what is left into half-magnitude bands.
+- `apps/web/src/lib/cdc-obesity-data.ts` calls `parseCdcCountyObesityPayload`
+  for the whole PLACES release, keeps the release's own national row apart
+  from the counties, and counts the counties into two-point bands.
 - The build falls back to a committed snapshot when the API is rate limited
   or blocked, so the static export always succeeds.
 - `JoblessChart` renders the monthly line with Recharts and breaks the line

@@ -3,11 +3,17 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { CdcObesityChart } from '@/components/CdcObesityChart';
 import { HawaiiQuakesChart } from '@/components/HawaiiQuakesChart';
 import { JoblessChart } from '@/components/JoblessChart';
 import { MicrositeStory } from '@/components/MicrositeStory';
 import { ReportIssueButton } from '@/components/ReportIssueButton';
 import { StatCard } from '@/components/StatCard';
+import {
+  bandLabelForPercent,
+  type CdcObesityStory,
+  fetchCdcObesityStory,
+} from '@/lib/cdc-obesity-data';
 import { fetchHawaiiQuakes, type HawaiiQuakeStory } from '@/lib/hawaii-quakes-data';
 import { fetchJoblessSeries, type JoblessSeries } from '@/lib/jobless-data';
 import {
@@ -118,6 +124,7 @@ export default async function MicrositePage({
 interface StoryData {
   jobless: JoblessSeries | null;
   hawaii: HawaiiQuakeStory | null;
+  obesity: CdcObesityStory | null;
 }
 
 /**
@@ -131,9 +138,12 @@ interface StoryData {
  */
 async function loadStoryData(slug: string): Promise<StoryData> {
   if (slug === 'hawaii-quakes') {
-    return { jobless: null, hawaii: await fetchHawaiiQuakes() };
+    return { jobless: null, hawaii: await fetchHawaiiQuakes(), obesity: null };
   }
-  return { jobless: await fetchJoblessSeries(), hawaii: null };
+  if (slug === 'cdc-county-obesity') {
+    return { jobless: null, hawaii: null, obesity: await fetchCdcObesityStory() };
+  }
+  return { jobless: await fetchJoblessSeries(), hawaii: null, obesity: null };
 }
 
 const NO_STORY_CONTENT: { chart: React.ReactNode; stats: React.ReactNode } = {
@@ -209,6 +219,49 @@ function renderStoryContent(
               accent="cyan"
               testId="quakes-below-3"
               dataValue={hawaii.belowMagnitude3}
+            />
+          </dl>
+        ),
+      };
+    }
+    case 'cdc-county-obesity': {
+      const { obesity } = data;
+      if (obesity === null) {
+        return NO_STORY_CONTENT;
+      }
+      return {
+        chart: (
+          <CdcObesityChart
+            bands={obesity.bands}
+            countyCount={obesity.countyCount}
+            medianPercent={obesity.medianPercent}
+            nationalPercent={obesity.nationalPercent}
+            nationalBandLabel={bandLabelForPercent(obesity.bands, obesity.nationalPercent)}
+            medianBandLabel={bandLabelForPercent(obesity.bands, obesity.medianPercent)}
+          />
+        ),
+        stats: (
+          <dl className="grid gap-6 py-[var(--spacing-2xl)] sm:grid-cols-3">
+            <StatCard
+              label="Counties with an estimate"
+              value={formatCount(obesity.countyCount)}
+              accent="rose"
+              testId="obesity-counties"
+              dataValue={obesity.countyCount}
+            />
+            <StatCard
+              label="Median county"
+              value={formatPercent(obesity.medianPercent)}
+              accent="rose"
+              testId="obesity-median"
+              dataValue={obesity.medianPercent}
+            />
+            <StatCard
+              label={`Counties above ${formatPercent(obesity.nationalPercent)}`}
+              value={formatCount(obesity.aboveNationalCount)}
+              accent="rose"
+              testId="obesity-above-national"
+              dataValue={obesity.aboveNationalCount}
             />
           </dl>
         ),

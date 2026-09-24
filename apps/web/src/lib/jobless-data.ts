@@ -12,12 +12,26 @@ import path from 'node:path';
 // published by the agency that runs the Current Population Survey.
 export const BLS_SERIES_URL = `https://api.bls.gov/publicAPI/v2/timeseries/data/${US_UNEMPLOYMENT_SERIES_ID}`;
 
-/** First year in the chart, and the last. Twenty years, two API calls. */
-export const JOBLESS_START_YEAR = 2006;
-export const JOBLESS_END_YEAR = 2025;
+/** Years of monthly figures on the chart: two decades, two API calls. */
+export const JOBLESS_WINDOW_YEARS = 20;
 
 /** How many years one BLS request may span. */
 export const BLS_MAX_YEARS_PER_REQUEST = 10;
+
+/**
+ * The window the chart reads: the twenty years ending with the current year.
+ *
+ * The window rolls forward with the calendar, so the newest month the agency
+ * has published is always on the chart. A pinned end year would leave the
+ * page showing a month from the past while the source had moved on.
+ *
+ * @param now - the day to read the window from, for tests
+ * @returns the first and last year to ask the API for
+ */
+export function joblessWindowYears(now: Date = new Date()): { startYear: number; endYear: number } {
+  const endYear = now.getUTCFullYear();
+  return { startYear: endYear - JOBLESS_WINDOW_YEARS + 1, endYear };
+}
 
 export const LIVE_PROBE_TIMEOUT_MS = 60_000;
 
@@ -154,19 +168,23 @@ async function fetchJson(url: string): Promise<unknown> {
  * Reads the unemployment series at build time, window by window.
  *
  * Falls back to the committed snapshot when the BLS API is slow, rate
- * limited, or unreachable. The fallback is logged, not swallowed.
+ * limited, or unreachable. The snapshot is trimmed to the same window, so a
+ * build that fell back charts the same years as a build that did not. The
+ * fallback is logged, not swallowed.
  *
+ * @param now - the day to read the window from, for tests
  * @returns the series the jobless-rate story renders
  */
-export async function fetchJoblessSeries(): Promise<JoblessSeries> {
+export async function fetchJoblessSeries(now: Date = new Date()): Promise<JoblessSeries> {
+  const { startYear, endYear } = joblessWindowYears(now);
   const observations: BlsObservation[] = [];
   try {
     for (
-      let windowStart = JOBLESS_START_YEAR;
-      windowStart <= JOBLESS_END_YEAR;
+      let windowStart = startYear;
+      windowStart <= endYear;
       windowStart += BLS_MAX_YEARS_PER_REQUEST
     ) {
-      const windowEnd = Math.min(windowStart + BLS_MAX_YEARS_PER_REQUEST - 1, JOBLESS_END_YEAR);
+      const windowEnd = Math.min(windowStart + BLS_MAX_YEARS_PER_REQUEST - 1, endYear);
       const payload = await fetchJson(
         `${BLS_SERIES_URL}?startyear=${windowStart}&endyear=${windowEnd}`,
       );
@@ -179,7 +197,12 @@ export async function fetchJoblessSeries(): Promise<JoblessSeries> {
     );
     const snapshot = JSON.parse(readFileSync(JOBLESS_FIXTURE_PATH, 'utf8')) as unknown;
     return buildJoblessSeries(
-      buildBlsSeries(parseBlsObservations(snapshot), US_UNEMPLOYMENT_SERIES_ID),
+      buildBlsSeries(
+        parseBlsObservations(snapshot).filter(
+          (observation) => observation.year >= startYear && observation.year <= endYear,
+        ),
+        US_UNEMPLOYMENT_SERIES_ID,
+      ),
     );
   }
 }
