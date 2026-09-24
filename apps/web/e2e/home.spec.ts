@@ -9,9 +9,10 @@ test.describe('home', () => {
     // (the site may be served under a base path).
     await page.goto('./');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-    await expect(
-      page.getByRole('link', { name: /peaked at 14.8 percent in April 2020/i }),
-    ).toHaveCount(MICROSITES.length);
+    // One card per published microsite, named after that story's own title.
+    for (const microsite of MICROSITES) {
+      await expect(page.getByRole('link', { name: microsite.title })).toHaveCount(1);
+    }
   });
 
   test('@critical opens a microsite story from its card', async ({ page }) => {
