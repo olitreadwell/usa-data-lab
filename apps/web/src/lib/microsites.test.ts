@@ -57,7 +57,7 @@ describe('relatedMicrositesFor', () => {
     }
   });
 
-  it('returns no related stories while only one microsite is published', () => {
+  it('returns no related stories for the only economy story', () => {
     const jobless = MICROSITES.find((microsite) => microsite.slug === 'jobless-rate');
     if (jobless === undefined) {
       throw new Error('jobless-rate missing');

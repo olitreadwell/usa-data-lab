@@ -197,4 +197,50 @@ export const MICROSITES: MicrositeConfig[] = withHiddenMicrositesRemoved<Microsi
       },
     ],
   },
+  {
+    slug: 'hawaii-quakes',
+    keyFacts: [
+      '264 earthquakes of magnitude 2.5 or higher were catalogued near Hawaii in 2025.',
+      '176 of them, two thirds of the year, were below magnitude 3.',
+      'The strongest was an M4.41 on 15 March 2025, 53 km west of Hawaiian Ocean View.',
+      'The deepest was 59.8 km down, 13 km west of Puako, on 22 February 2025.',
+      'Pahala appears in 113 of the 264 place fields, so most of the year was one corner of the island.',
+    ],
+    howToRead:
+      'Each bar counts the earthquakes inside a half step of magnitude, lowest first, so the leftmost bar is the busiest.',
+    sourceUrl: 'https://earthquake.usgs.gov/fdsnws/event/1/',
+    label: 'Hawaii earthquakes',
+    eyebrow: 'earthquakes near Hawaii',
+    title: 'Hawaii catalogued 264 earthquakes in 2025, and two thirds were below magnitude 3.',
+    description:
+      'The USGS earthquake catalogue lists 264 quakes of magnitude 2.5 or higher around the Hawaiian islands in 2025. Most were small enough that nobody felt them, one reached M4.41 in March, and the deepest was 59.8 km down.',
+    paragraphs: [
+      'The catalogue comes from the USGS FDSN event query, the same feed the agency publishes on its own maps. It is keyless and public domain. The query behind this page asks for one year inside a box around the main Hawaiian islands, magnitude 2.5 and up, and the page counts the answer into half steps of magnitude.',
+      'Small earthquakes outnumber large ones, so the bars fall away from left to right: 176 of the 264 sat between magnitude 2.5 and 3, and the whole year produced five at magnitude 4 or above. Pahala shows up in 113 of the place fields, which is one corner of the island carrying most of the year.',
+      'Magnitude 2.5 is a floor, not a natural break. The networks record plenty below it, and the catalogue keeps quarry blasts and other non-tectonic events in the same feed. Those rows are dropped before anything is counted, so every bar is an earthquake.',
+    ],
+    accent: 'cyan',
+    dataSource: 'US Geological Survey',
+    chartType: 'Histogram',
+    category: 'Environment & geography',
+    dataNote:
+      'Data: USGS earthquake catalogue, FDSN event query, read at deploy time without a key. The window is 1 January 2025 to 1 January 2026, which the catalogue reads as the end date excluded; the magnitude floor is 2.5; the box runs 18.5 to 22.5 north and 154 to 161 west. Rows the catalogue flags as something other than a tectonic earthquake, and rows with no magnitude or depth, are dropped before counting. The survivors are binned into half-magnitude bands from 2.5 up. If the catalogue is slow or unreachable at build time the page falls back to the committed snapshot in apps/web/src/fixtures and says so in the build log.',
+    references: [
+      {
+        label: 'USGS earthquake catalogue, FDSN event query',
+        url: 'https://earthquake.usgs.gov/fdsnws/event/1/',
+        kind: 'data',
+      },
+      {
+        label: 'The strongest quake of the year, event hv74634117',
+        url: 'https://earthquake.usgs.gov/earthquakes/eventpage/hv74634117',
+        kind: 'data',
+      },
+      {
+        label: 'ANSS Comprehensive Earthquake Catalog (ComCat)',
+        url: 'https://earthquake.usgs.gov/data/comcat/',
+        kind: 'data',
+      },
+    ],
+  },
 ]).filter((microsite) => PUBLISHED_MICROSITES.includes(microsite.slug));

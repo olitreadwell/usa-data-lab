@@ -3,10 +3,12 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { HawaiiQuakesChart } from '@/components/HawaiiQuakesChart';
 import { JoblessChart } from '@/components/JoblessChart';
 import { MicrositeStory } from '@/components/MicrositeStory';
 import { ReportIssueButton } from '@/components/ReportIssueButton';
 import { StatCard } from '@/components/StatCard';
+import { fetchHawaiiQuakes, type HawaiiQuakeStory } from '@/lib/hawaii-quakes-data';
 import { fetchJoblessSeries, type JoblessSeries } from '@/lib/jobless-data';
 import {
   categorySlugFor,
@@ -15,7 +17,7 @@ import {
   MICROSITES,
   relatedMicrositesFor,
 } from '@/lib/microsites';
-import { formatPercent, formatPointChange } from '@/lib/us-format';
+import { formatCount, formatMagnitude, formatPercent, formatPointChange } from '@/lib/us-format';
 
 interface MicrositePageProps {
   params: Promise<{ category: string; slug: string }>;
@@ -58,14 +60,12 @@ export default async function MicrositePage({
     notFound();
   }
 
-  const jobless = await fetchJoblessSeries();
-
   const related = relatedMicrositesFor(microsite).map((candidate) => ({
     label: candidate.label,
     href: micrositePathFor(candidate),
   }));
 
-  const content = renderStoryContent(slug, { jobless });
+  const content = renderStoryContent(slug, await loadStoryData(slug));
 
   return (
     <>
@@ -116,44 +116,105 @@ export default async function MicrositePage({
 }
 
 interface StoryData {
-  jobless: JoblessSeries;
+  jobless: JoblessSeries | null;
+  hawaii: HawaiiQuakeStory | null;
 }
+
+/**
+ * Reads the data one story needs from its own source.
+ *
+ * Each microsite fetches only what it renders, so a source that is slow or
+ * unreachable cannot hold up a page that does not use it.
+ *
+ * @param slug - the microsite slug
+ * @returns the story's data, with the other story's slot left empty
+ */
+async function loadStoryData(slug: string): Promise<StoryData> {
+  if (slug === 'hawaii-quakes') {
+    return { jobless: null, hawaii: await fetchHawaiiQuakes() };
+  }
+  return { jobless: await fetchJoblessSeries(), hawaii: null };
+}
+
+const NO_STORY_CONTENT: { chart: React.ReactNode; stats: React.ReactNode } = {
+  chart: null,
+  stats: null,
+};
 
 function renderStoryContent(
   slug: string,
   data: StoryData,
 ): { chart: React.ReactNode; stats: React.ReactNode } {
   switch (slug) {
-    case 'jobless-rate':
+    case 'jobless-rate': {
+      const { jobless } = data;
+      if (jobless === null) {
+        return NO_STORY_CONTENT;
+      }
       return {
-        chart: <JoblessChart points={data.jobless.points} />,
+        chart: <JoblessChart points={jobless.points} />,
         stats: (
           <dl className="grid gap-6 py-[var(--spacing-2xl)] sm:grid-cols-3">
             <StatCard
-              label={`Rate in ${data.jobless.latestLabel}`}
-              value={formatPercent(data.jobless.latest.value)}
+              label={`Rate in ${jobless.latestLabel}`}
+              value={formatPercent(jobless.latest.value)}
               accent="teal"
               testId="jobless-latest"
-              dataValue={data.jobless.latest.value}
+              dataValue={jobless.latest.value}
             />
             <StatCard
-              label={`Peak, ${data.jobless.peakLabel}`}
-              value={formatPercent(data.jobless.peak.value)}
+              label={`Peak, ${jobless.peakLabel}`}
+              value={formatPercent(jobless.peak.value)}
               accent="teal"
               testId="jobless-peak"
-              dataValue={data.jobless.peak.value}
+              dataValue={jobless.peak.value}
             />
             <StatCard
               label="Change since the peak"
-              value={formatPointChange(data.jobless.changeFromPeak)}
+              value={formatPointChange(jobless.changeFromPeak)}
               accent="teal"
               testId="jobless-change"
-              dataValue={data.jobless.changeFromPeak}
+              dataValue={jobless.changeFromPeak}
             />
           </dl>
         ),
       };
+    }
+    case 'hawaii-quakes': {
+      const { hawaii } = data;
+      if (hawaii === null) {
+        return NO_STORY_CONTENT;
+      }
+      return {
+        chart: <HawaiiQuakesChart bands={hawaii.bands} count={hawaii.count} />,
+        stats: (
+          <dl className="grid gap-6 py-[var(--spacing-2xl)] sm:grid-cols-3">
+            <StatCard
+              label="Earthquakes in 2025"
+              value={formatCount(hawaii.count)}
+              accent="cyan"
+              testId="quakes-count"
+              dataValue={hawaii.count}
+            />
+            <StatCard
+              label={`Strongest, ${hawaii.strongestLabel}`}
+              value={formatMagnitude(hawaii.strongest.magnitude)}
+              accent="cyan"
+              testId="quakes-strongest"
+              dataValue={hawaii.strongest.magnitude}
+            />
+            <StatCard
+              label="Below magnitude 3"
+              value={formatCount(hawaii.belowMagnitude3)}
+              accent="cyan"
+              testId="quakes-below-3"
+              dataValue={hawaii.belowMagnitude3}
+            />
+          </dl>
+        ),
+      };
+    }
     default:
-      return { chart: null, stats: null };
+      return NO_STORY_CONTENT;
   }
 }

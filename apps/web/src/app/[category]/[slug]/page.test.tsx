@@ -62,6 +62,41 @@ vi.mock('@/lib/jobless-data', async (importOriginal) => {
   };
 });
 
+vi.mock('@/lib/hawaii-quakes-data', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/hawaii-quakes-data')>();
+  return {
+    ...actual,
+    fetchHawaiiQuakes: vi.fn().mockResolvedValue({
+      bands: [
+        { label: '2.5 up to 3.0', count: 176 },
+        { label: '3.0 up to 3.5', count: 65 },
+        { label: '3.5 up to 4.0', count: 18 },
+        { label: '4.0 up to 4.5', count: 5 },
+      ],
+      count: 264,
+      strongest: {
+        id: 'hv74634117',
+        magnitude: 4.41,
+        place: '53 km W of Hawaiian Ocean View, Hawaii',
+        timeMs: Date.UTC(2025, 2, 15),
+        depthKm: 8.9,
+        url: 'https://earthquake.usgs.gov/earthquakes/eventpage/hv74634117',
+      },
+      deepest: {
+        id: 'hv74634000',
+        magnitude: 3.1,
+        place: '13 km W of Puako, Hawaii',
+        timeMs: Date.UTC(2025, 1, 22),
+        depthKm: 59.8,
+        url: 'https://earthquake.usgs.gov/earthquakes/eventpage/hv74634000',
+      },
+      strongestLabel: '15 Mar 2025',
+      deepestLabel: '22 Feb 2025',
+      belowMagnitude3: 176,
+    }),
+  };
+});
+
 describe('MicrositePage', () => {
   it('renders the jobless-rate story with narrative, chart, and sources', async () => {
     const stream = await renderToReadableStream(
@@ -126,5 +161,35 @@ describe('MicrositePage', () => {
         title: 'usa-data-lab',
       },
     );
+  });
+
+  it('renders the hawaii-quakes story with its chart, stat cards, and sources', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('hawaii-quakes'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain('two thirds were below magnitude 3');
+    expect(html).toContain('href="/environment"');
+    expect(html).toContain('264');
+    expect(html).toContain('M4.41');
+    expect(html).toContain('Strongest, 15 Mar 2025');
+    expect(html).toContain('USGS earthquake catalogue, FDSN event query');
+    expect(html).toContain('aria-label="Breadcrumb"');
+    expect(html.match(/<h1[^>]*>/g) ?? []).toHaveLength(1);
+  });
+
+  it('returns a unique document title for the hawaii-quakes microsite', async () => {
+    await expect(
+      generateMetadata({ params: Promise.resolve(paramsFor('hawaii-quakes')) }),
+    ).resolves.toEqual({
+      title: 'Hawaii earthquakes - usa-data-lab',
+      description: expect.any(String),
+      openGraph: {
+        title: 'Hawaii earthquakes - usa-data-lab',
+        description: expect.any(String),
+        url: '/environment/hawaii-quakes/',
+        type: 'article',
+      },
+    });
   });
 });

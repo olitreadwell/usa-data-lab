@@ -58,8 +58,9 @@ export default async function HomePage(): Promise<React.ReactElement> {
             Small experiments digging through US public data for the funny and the surprising.
           </h1>
           <p className="numeral-paragraph-lg text-[var(--color-muted)]">
-            {galleryCards.length} live microsite{galleryCards.length === 1 ? '' : 's'}. Bureau of
-            Labor Statistics series, read at deploy time from a keyless API.
+            {galleryCards.length} live microsite{galleryCards.length === 1 ? '' : 's'}. A Bureau of
+            Labor Statistics series and a USGS earthquake catalogue, read at deploy time from
+            keyless APIs.
           </p>
         </Stack>
         <div className="pb-[var(--spacing-3xl)]">
