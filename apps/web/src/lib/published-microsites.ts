@@ -6,4 +6,5 @@ export const PUBLISHED_MICROSITES: readonly string[] = [
   'jobless-rate',
   'hawaii-quakes',
   'cdc-county-obesity',
+  'us-temperature-record',
 ];

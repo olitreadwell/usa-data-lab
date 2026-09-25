@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest';
 import {
   formatCount,
   formatDepthKm,
+  formatFahrenheit,
+  formatFahrenheitChange,
   formatMagnitude,
   formatPercent,
   formatPointChange,
@@ -41,5 +43,19 @@ describe('formatDepthKm', () => {
   it('keeps one decimal and the unit', () => {
     expect(formatDepthKm(59.8)).toBe('59.8 km');
     expect(formatDepthKm(5)).toBe('5.0 km');
+  });
+});
+
+describe('formatFahrenheit', () => {
+  it('keeps two decimals and the unit', () => {
+    expect(formatFahrenheit(55.48)).toBe('55.48 °F');
+    expect(formatFahrenheit(50.05)).toBe('50.05 °F');
+  });
+});
+
+describe('formatFahrenheitChange', () => {
+  it('marks a rise with a plus and a fall with a minus', () => {
+    expect(formatFahrenheitChange(2.61)).toBe('+2.61 °F');
+    expect(formatFahrenheitChange(-1.4)).toBe('-1.40 °F');
   });
 });

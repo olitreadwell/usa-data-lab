@@ -13,6 +13,7 @@ export type MicrositeDataSource =
   | 'Environmental Protection Agency'
   | 'Centers for Disease Control (CDC)'
   | 'Federal Aviation Administration'
+  | 'National Oceanic and Atmospheric Administration (NOAA)'
   | 'data.gov'
   | 'OpenStreetMap'
   | 'Wikipedia & Wikidata';
@@ -285,6 +286,53 @@ export const MICROSITES: MicrositeConfig[] = withHiddenMicrositesRemoved<Microsi
       {
         label: 'PLACES program and methods (CDC)',
         url: 'https://www.cdc.gov/places/index.html',
+        kind: 'data',
+      },
+    ],
+  },
+  {
+    slug: 'us-temperature-record',
+    keyFacts: [
+      '2024 is the warmest year in the record at 55.48 °F.',
+      '1917 is the coldest at 50.05 °F, 5.43 degrees lower.',
+      'Every year from 2000 to 2025 sits above the 20th century average of 52.01 °F.',
+      '2025 came in at 54.62 °F, 2.61 degrees above that average.',
+      'The 1930s is the warmest decade before 1980, and the six years since 2020 average 1.82 degrees above it.',
+    ],
+    howToRead:
+      'Each dot is one year, and the rows run from the 1890s at the top to the 2020s at the bottom; the dashed line is the 20th century average.',
+    sourceUrl:
+      'https://www.ncei.noaa.gov/access/monitoring/climate-at-a-glance/national/time-series/110/tavg/12/12/1895-2026.csv',
+    label: 'US temperature record',
+    eyebrow: 'the US temperature record',
+    title: 'Every year since 2000 has run warmer than the 20th century average.',
+    description:
+      'The contiguous United States averaged 52.01 °F across the 20th century, and every year since 2000 has come in above that line. The warmest year in the record is 2024 at 55.48 °F, and the coldest is 1917 at 50.05 °F.',
+    paragraphs: [
+      'The National Centers for Environmental Information averages thousands of station readings into one temperature for each month, then into one figure for the calendar year. The record starts in 1895 and covers the contiguous 48 states, so Alaska, Hawaii, and the territories are outside it.',
+      'The chart stacks the 131 years into decade rows, oldest at the top, and the rows drift right as you read down. The 1930s is the warmest decade in the first 85 years of the record at 52.63 °F. The six years published this decade average 54.45 °F, 1.82 degrees above it. Every one of the 26 years from 2000 to 2025 sits above the 20th century average.',
+      'Two things about the numbers. The record is an average over a large area rather than a reading from one place, so a warm year here does not mean every state had one. The current year joins the file only after December has closed it, which is why the newest row here is a complete year rather than a partial one.',
+    ],
+    accent: 'amber',
+    dataSource: 'National Oceanic and Atmospheric Administration (NOAA)',
+    chartType: 'Strip chart',
+    category: 'Energy & climate',
+    dataNote:
+      'Data: NOAA NCEI Climate at a Glance, the contiguous United States average temperature series (parameter tavg, region 110), read at deploy time without a key. One request returns one row per calendar year from 1895, in degrees Fahrenheit, as a twelve month window ending in December, so the newest row is the last complete year and the current year joins only after December. The 20th century average of 52.01 °F is the mean of the 1901 to 2000 rows in the same file. The series covers the contiguous 48 states and leaves out Alaska, Hawaii, and the territories. If the download is slow or unreachable at build time the page falls back to the committed snapshot in apps/web/src/fixtures and says so in the build log.',
+    references: [
+      {
+        label: 'Climate at a Glance (NOAA NCEI)',
+        url: 'https://www.ncei.noaa.gov/access/monitoring/climate-at-a-glance/',
+        kind: 'data',
+      },
+      {
+        label: 'The annual temperature download this site reads (contiguous US, 1895 onwards)',
+        url: 'https://www.ncei.noaa.gov/access/monitoring/climate-at-a-glance/national/time-series/110/tavg/12/12/1895-2026.csv',
+        kind: 'data',
+      },
+      {
+        label: 'National Climate Report, monthly and annual summaries (NOAA NCEI)',
+        url: 'https://www.ncei.noaa.gov/access/monitoring/monthly-report/national',
         kind: 'data',
       },
     ],

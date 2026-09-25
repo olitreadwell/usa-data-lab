@@ -119,6 +119,61 @@ vi.mock('@/lib/cdc-obesity-data', async (importOriginal) => {
   };
 });
 
+vi.mock('@/lib/us-temperature-data', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/us-temperature-data')>();
+  return {
+    ...actual,
+    fetchUsTemperatureStory: vi.fn().mockResolvedValue({
+      points: [
+        {
+          year: 1895,
+          valueFahrenheit: 50.33,
+          decadeLabel: '1890s',
+          changeFromTwentiethCentury: -1.68,
+        },
+        {
+          year: 1917,
+          valueFahrenheit: 50.05,
+          decadeLabel: '1910s',
+          changeFromTwentiethCentury: -1.96,
+        },
+        {
+          year: 2025,
+          valueFahrenheit: 54.62,
+          decadeLabel: '2020s',
+          changeFromTwentiethCentury: 2.61,
+        },
+      ],
+      decadeLabels: ['1890s', '1910s', '2020s'],
+      yearCount: 131,
+      firstYear: 1895,
+      lastYear: 2025,
+      warmest: {
+        year: 2024,
+        valueFahrenheit: 55.48,
+        decadeLabel: '2020s',
+        changeFromTwentiethCentury: 3.47,
+      },
+      coldest: {
+        year: 1917,
+        valueFahrenheit: 50.05,
+        decadeLabel: '1910s',
+        changeFromTwentiethCentury: -1.96,
+      },
+      latest: {
+        year: 2025,
+        valueFahrenheit: 54.62,
+        decadeLabel: '2020s',
+        changeFromTwentiethCentury: 2.61,
+      },
+      latestChange: 2.61,
+      twentiethCenturyMean: 52.01,
+      recentYearCount: 26,
+      recentAboveCount: 26,
+    }),
+  };
+});
+
 describe('MicrositePage', () => {
   it('renders the jobless-rate story with narrative, chart, and sources', async () => {
     const stream = await renderToReadableStream(
@@ -240,6 +295,35 @@ describe('MicrositePage', () => {
         title: 'County obesity - usa-data-lab',
         description: expect.any(String),
         url: '/health/cdc-county-obesity/',
+        type: 'article',
+      },
+    });
+  });
+  it('renders the us-temperature-record story with its chart, stat cards, and sources', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('us-temperature-record'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain('Every year since 2000 has run warmer than the 20th century average');
+    expect(html).toContain('href="/energy"');
+    expect(html).toContain('55.48 °F');
+    expect(html).toContain('+2.61 °F');
+    expect(html).toContain('26 of 26');
+    expect(html).toContain('Climate at a Glance (NOAA NCEI)');
+    expect(html).toContain('aria-label="Breadcrumb"');
+    expect(html.match(/<h1[^>]*>/g) ?? []).toHaveLength(1);
+  });
+
+  it('returns a unique document title for the us-temperature-record microsite', async () => {
+    await expect(
+      generateMetadata({ params: Promise.resolve(paramsFor('us-temperature-record')) }),
+    ).resolves.toEqual({
+      title: 'US temperature record - usa-data-lab',
+      description: expect.any(String),
+      openGraph: {
+        title: 'US temperature record - usa-data-lab',
+        description: expect.any(String),
+        url: '/energy/us-temperature-record/',
         type: 'article',
       },
     });

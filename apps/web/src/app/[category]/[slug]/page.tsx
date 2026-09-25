@@ -9,6 +9,7 @@ import { JoblessChart } from '@/components/JoblessChart';
 import { MicrositeStory } from '@/components/MicrositeStory';
 import { ReportIssueButton } from '@/components/ReportIssueButton';
 import { StatCard } from '@/components/StatCard';
+import { UsTemperatureStripChart } from '@/components/UsTemperatureStripChart';
 import {
   bandLabelForPercent,
   type CdcObesityStory,
@@ -23,7 +24,15 @@ import {
   MICROSITES,
   relatedMicrositesFor,
 } from '@/lib/microsites';
-import { formatCount, formatMagnitude, formatPercent, formatPointChange } from '@/lib/us-format';
+import {
+  formatCount,
+  formatFahrenheit,
+  formatFahrenheitChange,
+  formatMagnitude,
+  formatPercent,
+  formatPointChange,
+} from '@/lib/us-format';
+import { fetchUsTemperatureStory, type UsTemperatureStory } from '@/lib/us-temperature-data';
 
 interface MicrositePageProps {
   params: Promise<{ category: string; slug: string }>;
@@ -125,6 +134,7 @@ interface StoryData {
   jobless: JoblessSeries | null;
   hawaii: HawaiiQuakeStory | null;
   obesity: CdcObesityStory | null;
+  temperature: UsTemperatureStory | null;
 }
 
 /**
@@ -138,12 +148,25 @@ interface StoryData {
  */
 async function loadStoryData(slug: string): Promise<StoryData> {
   if (slug === 'hawaii-quakes') {
-    return { jobless: null, hawaii: await fetchHawaiiQuakes(), obesity: null };
+    return { jobless: null, hawaii: await fetchHawaiiQuakes(), obesity: null, temperature: null };
   }
   if (slug === 'cdc-county-obesity') {
-    return { jobless: null, hawaii: null, obesity: await fetchCdcObesityStory() };
+    return {
+      jobless: null,
+      hawaii: null,
+      obesity: await fetchCdcObesityStory(),
+      temperature: null,
+    };
   }
-  return { jobless: await fetchJoblessSeries(), hawaii: null, obesity: null };
+  if (slug === 'us-temperature-record') {
+    return {
+      jobless: null,
+      hawaii: null,
+      obesity: null,
+      temperature: await fetchUsTemperatureStory(),
+    };
+  }
+  return { jobless: await fetchJoblessSeries(), hawaii: null, obesity: null, temperature: null };
 }
 
 const NO_STORY_CONTENT: { chart: React.ReactNode; stats: React.ReactNode } = {
@@ -262,6 +285,49 @@ function renderStoryContent(
               accent="rose"
               testId="obesity-above-national"
               dataValue={obesity.aboveNationalCount}
+            />
+          </dl>
+        ),
+      };
+    }
+    case 'us-temperature-record': {
+      const { temperature } = data;
+      if (temperature === null) {
+        return NO_STORY_CONTENT;
+      }
+      return {
+        chart: (
+          <UsTemperatureStripChart
+            points={temperature.points}
+            decadeLabels={temperature.decadeLabels}
+            twentiethCenturyMean={temperature.twentiethCenturyMean}
+            yearCount={temperature.yearCount}
+            warmest={temperature.warmest}
+            coldest={temperature.coldest}
+          />
+        ),
+        stats: (
+          <dl className="grid gap-6 py-[var(--spacing-2xl)] sm:grid-cols-3">
+            <StatCard
+              label={`Warmest year, ${temperature.warmest.year}`}
+              value={formatFahrenheit(temperature.warmest.valueFahrenheit)}
+              accent="amber"
+              testId="temperature-warmest"
+              dataValue={temperature.warmest.valueFahrenheit}
+            />
+            <StatCard
+              label={`${temperature.latest.year} against the 20th century`}
+              value={formatFahrenheitChange(temperature.latestChange)}
+              accent="amber"
+              testId="temperature-latest-change"
+              dataValue={temperature.latestChange}
+            />
+            <StatCard
+              label="Years above the average since 2000"
+              value={`${formatCount(temperature.recentAboveCount)} of ${formatCount(temperature.recentYearCount)}`}
+              accent="amber"
+              testId="temperature-recent-above"
+              dataValue={temperature.recentAboveCount}
             />
           </dl>
         ),

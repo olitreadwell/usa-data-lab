@@ -2,7 +2,7 @@
 
 Example site for
 [usa-open-data-connectors](https://github.com/olitreadwell/usa-open-data-connectors).
-Three microsites showing the full pipeline from a US public-data connector to
+Four microsites showing the full pipeline from a US public-data connector to
 a deployed static chart.
 
 ## The microsites
@@ -16,6 +16,11 @@ a deployed static chart.
   the Hawaiian islands in 2025. Two thirds of them stayed below magnitude 3,
   the strongest was an M4.41 on 15 March, and the deepest was 59.8 km down.
   Data from the USGS earthquake catalogue, read at deploy time.
+- **US temperature record**: the contiguous United States has averaged 52.01
+  °F across the 20th century, and every year from 2000 to 2025 came in above
+  that line. The warmest year in the record is 2024 at 55.48 °F and the
+  coldest is 1917 at 50.05 °F. Data from the NOAA NCEI Climate at a Glance
+  download, read at deploy time.
 - **County obesity**: 2,956 US counties with an estimated share of adults
   living with obesity, from 16.7 percent in Boulder County, Colorado to 52.9
   percent in Perry County, Alabama. The median county sits at 37.9 percent,
@@ -30,6 +35,10 @@ a deployed static chart.
 - `apps/web/src/lib/hawaii-quakes-data.ts` calls `parseUsgsEarthquakes` for one
   closed year, drops the non-tectonic rows the catalogue mixes in, and counts
   what is left into half-magnitude bands.
+- `apps/web/src/lib/us-temperature-data.ts` calls
+  `parseNceiAnnualTemperatureCsv` for the calendar-year record, measures every
+  year against the 20th century average in the same file, and stacks the years
+  into decade rows for the strip chart.
 - `apps/web/src/lib/cdc-obesity-data.ts` calls `parseCdcCountyObesityPayload`
   for the whole PLACES release, keeps the release's own national row apart
   from the counties, and counts the counties into two-point bands.

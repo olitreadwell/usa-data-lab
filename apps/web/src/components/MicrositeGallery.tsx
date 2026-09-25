@@ -87,8 +87,10 @@ export function MicrositeGallery({
 
   const hasActiveFilter = dataSource !== ALL || chartType !== ALL || category !== ALL;
 
+  // w-full plus a min-w-0 label keeps a long option label, such as a full
+  // agency name, from widening the page on a narrow screen.
   const selectClass =
-    'rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-bg)] px-3 py-2 text-sm text-[var(--color-fg)]';
+    'w-full rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-bg)] px-3 py-2 text-sm text-[var(--color-fg)]';
 
   return (
     <section aria-labelledby="microsite-filters-heading">
@@ -99,7 +101,7 @@ export function MicrositeGallery({
       ) : null}
       <div className="grid gap-3 sm:grid-cols-[1fr_1fr_1fr_auto]">
         {(Object.keys(FILTER_LABELS) as FilterKey[]).map((key) => (
-          <label key={key} className="flex flex-col gap-1">
+          <label key={key} className="flex min-w-0 flex-col gap-1">
             <span className="numeral-text-eyebrow text-[var(--color-muted)]">
               {FILTER_LABELS[key]}
             </span>

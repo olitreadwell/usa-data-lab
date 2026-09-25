@@ -51,3 +51,27 @@ export function formatMagnitude(value: number): string {
 export function formatDepthKm(value: number): string {
   return `${value.toFixed(1)} km`;
 }
+
+/**
+ * Formats a temperature in degrees Fahrenheit to two decimals, e.g. "55.48 °F".
+ *
+ * The agency publishes two decimals, so the display keeps both rather than
+ * rounding away the difference between two years.
+ *
+ * @param value - the temperature
+ * @returns the formatted string
+ */
+export function formatFahrenheit(value: number): string {
+  return `${value.toFixed(2)} °F`;
+}
+
+/**
+ * Formats a signed temperature difference, e.g. "+2.61 °F".
+ *
+ * @param value - the difference in degrees Fahrenheit
+ * @returns the formatted string
+ */
+export function formatFahrenheitChange(value: number): string {
+  const sign = value > 0 ? '+' : '';
+  return `${sign}${value.toFixed(2)} °F`;
+}
