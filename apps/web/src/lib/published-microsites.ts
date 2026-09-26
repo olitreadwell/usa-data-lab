@@ -7,4 +7,5 @@ export const PUBLISHED_MICROSITES: readonly string[] = [
   'hawaii-quakes',
   'cdc-county-obesity',
   'us-temperature-record',
+  'battery-sea-level',
 ];

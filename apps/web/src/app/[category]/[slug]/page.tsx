@@ -8,6 +8,7 @@ import { HawaiiQuakesChart } from '@/components/HawaiiQuakesChart';
 import { JoblessChart } from '@/components/JoblessChart';
 import { MicrositeStory } from '@/components/MicrositeStory';
 import { ReportIssueButton } from '@/components/ReportIssueButton';
+import { SeaLevelDotPlot } from '@/components/SeaLevelDotPlot';
 import { StatCard } from '@/components/StatCard';
 import { UsTemperatureStripChart } from '@/components/UsTemperatureStripChart';
 import {
@@ -24,11 +25,14 @@ import {
   MICROSITES,
   relatedMicrositesFor,
 } from '@/lib/microsites';
+import { fetchSeaLevelStory, type SeaLevelStory } from '@/lib/sea-level-data';
 import {
   formatCount,
   formatFahrenheit,
   formatFahrenheitChange,
   formatMagnitude,
+  formatMetresChange,
+  formatMillimetresPerYear,
   formatPercent,
   formatPointChange,
 } from '@/lib/us-format';
@@ -135,6 +139,7 @@ interface StoryData {
   hawaii: HawaiiQuakeStory | null;
   obesity: CdcObesityStory | null;
   temperature: UsTemperatureStory | null;
+  seaLevel: SeaLevelStory | null;
 }
 
 /**
@@ -148,7 +153,13 @@ interface StoryData {
  */
 async function loadStoryData(slug: string): Promise<StoryData> {
   if (slug === 'hawaii-quakes') {
-    return { jobless: null, hawaii: await fetchHawaiiQuakes(), obesity: null, temperature: null };
+    return {
+      jobless: null,
+      hawaii: await fetchHawaiiQuakes(),
+      obesity: null,
+      temperature: null,
+      seaLevel: null,
+    };
   }
   if (slug === 'cdc-county-obesity') {
     return {
@@ -156,6 +167,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       hawaii: null,
       obesity: await fetchCdcObesityStory(),
       temperature: null,
+      seaLevel: null,
     };
   }
   if (slug === 'us-temperature-record') {
@@ -164,9 +176,25 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       hawaii: null,
       obesity: null,
       temperature: await fetchUsTemperatureStory(),
+      seaLevel: null,
     };
   }
-  return { jobless: await fetchJoblessSeries(), hawaii: null, obesity: null, temperature: null };
+  if (slug === 'battery-sea-level') {
+    return {
+      jobless: null,
+      hawaii: null,
+      obesity: null,
+      temperature: null,
+      seaLevel: await fetchSeaLevelStory(),
+    };
+  }
+  return {
+    jobless: await fetchJoblessSeries(),
+    hawaii: null,
+    obesity: null,
+    temperature: null,
+    seaLevel: null,
+  };
 }
 
 const NO_STORY_CONTENT: { chart: React.ReactNode; stats: React.ReactNode } = {
@@ -328,6 +356,50 @@ function renderStoryContent(
               accent="amber"
               testId="temperature-recent-above"
               dataValue={temperature.recentAboveCount}
+            />
+          </dl>
+        ),
+      };
+    }
+    case 'battery-sea-level': {
+      const { seaLevel } = data;
+      if (seaLevel === null) {
+        return NO_STORY_CONTENT;
+      }
+      return {
+        chart: (
+          <SeaLevelDotPlot
+            points={seaLevel.points}
+            stationName={seaLevel.stationName}
+            yearCount={seaLevel.yearCount}
+            riseMeters={seaLevel.riseMeters}
+            trendMillimetresPerYear={seaLevel.trendMillimetresPerYear}
+            trendStartMeters={seaLevel.trendStartMeters}
+            trendEndMeters={seaLevel.trendEndMeters}
+          />
+        ),
+        stats: (
+          <dl className="grid gap-6 py-[var(--spacing-2xl)] sm:grid-cols-3">
+            <StatCard
+              label={`Rise since ${String(seaLevel.firstYear.year)}`}
+              value={formatMetresChange(seaLevel.riseMeters)}
+              accent="sky"
+              testId="sea-level-rise"
+              dataValue={seaLevel.riseMeters}
+            />
+            <StatCard
+              label={`${String(seaLevel.lastYear.year)} against the datum`}
+              value={formatMetresChange(seaLevel.lastYear.meanSeaLevelMeters)}
+              accent="sky"
+              testId="sea-level-latest"
+              dataValue={seaLevel.lastYear.meanSeaLevelMeters}
+            />
+            <StatCard
+              label="Trend across the record"
+              value={formatMillimetresPerYear(seaLevel.trendMillimetresPerYear)}
+              accent="sky"
+              testId="sea-level-trend"
+              dataValue={seaLevel.trendMillimetresPerYear}
             />
           </dl>
         ),

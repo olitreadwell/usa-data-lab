@@ -75,3 +75,47 @@ export function formatFahrenheitChange(value: number): string {
   const sign = value > 0 ? '+' : '';
   return `${sign}${value.toFixed(2)} °F`;
 }
+
+/**
+ * Formats a height in metres to two decimals, e.g. "-0.36 m".
+ *
+ * The tide gauge publishes three decimals. Two keeps a century of change to
+ * a readable width without hiding the year-to-year difference.
+ *
+ * @param value - the height in metres against the tidal datum
+ * @returns the formatted string
+ */
+export function formatMetres(value: number): string {
+  return `${value.toFixed(2)} m`;
+}
+
+/**
+ * Formats a signed change in metres, e.g. "+0.48 m".
+ *
+ * @param value - the change in metres
+ * @returns the formatted string
+ */
+export function formatMetresChange(value: number): string {
+  const sign = value > 0 ? '+' : '';
+  return `${sign}${value.toFixed(2)} m`;
+}
+
+/**
+ * Formats a sea level trend in millimetres per year, e.g. "2.95 mm a year".
+ *
+ * @param value - the fitted trend in millimetres per year
+ * @returns the formatted string
+ */
+export function formatMillimetresPerYear(value: number): string {
+  return `${value.toFixed(2)} mm a year`;
+}
+
+/**
+ * Formats a height in inches to the nearest whole inch, e.g. "19 inches".
+ *
+ * @param value - the height in inches
+ * @returns the formatted string
+ */
+export function formatInches(value: number): string {
+  return `${Math.round(value)} inches`;
+}

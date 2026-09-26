@@ -337,4 +337,55 @@ export const MICROSITES: MicrositeConfig[] = withHiddenMicrositesRemoved<Microsi
       },
     ],
   },
+  {
+    slug: 'battery-sea-level',
+    keyFacts: [
+      'The record holds 155 years, from 1856 to 2025, with fifteen calendar years missing.',
+      '2025 averaged 0.12 m above the datum, and 1856 averaged 0.36 m below it.',
+      'The fitted trend is 2.95 mm a year across the whole record.',
+      'The ten highest years all fall between 2010 and 2025.',
+      'The lowest year is 1874, at 0.39 m below the datum.',
+    ],
+    howToRead:
+      'Each dot is one year, running left to right from 1856 to 2025. The dashed line is the datum the heights are measured against, and the straight line is the trend fitted through the whole record.',
+    sourceUrl: 'https://tidesandcurrents.noaa.gov/stationhome.html?id=8518750',
+    label: 'Battery sea level',
+    eyebrow: 'sea level at The Battery',
+    title: 'Sea level at The Battery has risen 19 inches since 1856.',
+    description:
+      'The tide gauge at The Battery in New York has been reading the water since 1856. Across 155 years of annual means it has climbed 0.48 m, or 19 inches, and the ten highest years in the record all fall in the last sixteen.',
+    paragraphs: [
+      'The gauge stands at the southern tip of Manhattan and has published a monthly mean since 1856, the longest such record in the country. The heights on this page are metres against the MSL datum for the station, the average of hourly readings over the 1983 to 2001 tidal epoch, which is what makes a year from the 1870s comparable with last year.',
+      'Fitted across the record, the annual mean climbs 2.95 mm a year, and the rise is not spread evenly. The ten oldest years in the record average 0.354 m below the datum, the ten newest average 0.131 m above it, and every one of the ten highest years sits between 2010 and 2025.',
+      'Two things about the numbers. Fifteen calendar years carry no monthly value at all, which is 1861 and the run from 1879 to 1892, so the dots skip them, and 1920 holds seven months rather than twelve. This is also relative sea level at one station: the reading is taken against a fixed reference on land, so it combines the rise of the sea with any local movement of the ground underneath.',
+    ],
+    accent: 'sky',
+    dataSource: 'National Oceanic and Atmospheric Administration (NOAA)',
+    chartType: 'Dot plot',
+    category: 'Environment & geography',
+    dataNote:
+      'Data: NOAA CO-OPS Tides and Currents, the monthly mean sea level product for station 8518750 (The Battery, New York), read at deploy time without a key. One request covers the whole record, from January 1856 to December 2025, in metres against the station MSL datum, the mean of hourly heights over the 1983 to 2001 National Tidal Datum Epoch. The window ends with the last complete calendar year, so a year joins the record once December has closed it. The agency answers with a row for every month in the window and leaves the value blank when it has none; blank rows are dropped, and a year is averaged over the months it does have, which is why 1920 is an average of seven months and 1861 and 1879 to 1892 carry none at all. The trend is a least-squares fit through the annual means, in millimetres per year, and the 19 inches in the headline is the change between the 1856 and the 2025 annual means. If the download is slow or unreachable at build time the page falls back to the committed snapshot in apps/web/src/fixtures and says so in the build log.',
+    references: [
+      {
+        label: 'Tides and Currents station 8518750, The Battery (NOAA CO-OPS)',
+        url: 'https://tidesandcurrents.noaa.gov/stationhome.html?id=8518750',
+        kind: 'data',
+      },
+      {
+        label: 'The monthly mean sea level request this site reads (NOAA CO-OPS)',
+        url: 'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=monthly_mean&application=nzlab-usa-sources&begin_date=18560101&end_date=20251231&datum=MSL&station=8518750&time_zone=gmt&units=metric&format=json',
+        kind: 'data',
+      },
+      {
+        label: 'Relative sea level trends at US tide gauges (NOAA CO-OPS)',
+        url: 'https://tidesandcurrents.noaa.gov/sltrends/',
+        kind: 'data',
+      },
+      {
+        label: 'Tidal datums and the National Tidal Datum Epoch (NOAA CO-OPS)',
+        url: 'https://tidesandcurrents.noaa.gov/datum_options.html',
+        kind: 'data',
+      },
+    ],
+  },
 ]).filter((microsite) => PUBLISHED_MICROSITES.includes(microsite.slug));

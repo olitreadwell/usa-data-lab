@@ -2,7 +2,7 @@
 
 Example site for
 [usa-open-data-connectors](https://github.com/olitreadwell/usa-open-data-connectors).
-Four microsites showing the full pipeline from a US public-data connector to
+Five microsites showing the full pipeline from a US public-data connector to
 a deployed static chart.
 
 ## The microsites
@@ -26,6 +26,11 @@ a deployed static chart.
   percent in Perry County, Alabama. The median county sits at 37.9 percent,
   above the release's own national figure of 32.8 percent. Data from the CDC
   PLACES county release, read at deploy time.
+- **Battery sea level**: the tide gauge at The Battery in New York has 155
+  years of annual means, from 1856 to 2025, and the mean has climbed 0.48 m
+  (19 inches) across them at a fitted 2.95 mm a year. The ten highest years
+  all fall between 2010 and 2025. Data from the NOAA CO-OPS monthly mean sea
+  level product, read at deploy time.
 
 ## What this example shows
 
@@ -42,6 +47,9 @@ a deployed static chart.
 - `apps/web/src/lib/cdc-obesity-data.ts` calls `parseCdcCountyObesityPayload`
   for the whole PLACES release, keeps the release's own national row apart
   from the counties, and counts the counties into two-point bands.
+- `apps/web/src/lib/sea-level-data.ts` calls `parseNoaaSeaLevelPayload` for
+  one gauge's whole record, averages the months into calendar years, fits a
+  trend through them, and stops the window at the last complete year.
 - The build falls back to a committed snapshot when the API is rate limited
   or blocked, so the static export always succeeds.
 - `JoblessChart` renders the monthly line with Recharts and breaks the line

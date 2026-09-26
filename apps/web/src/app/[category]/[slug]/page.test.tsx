@@ -174,6 +174,33 @@ vi.mock('@/lib/us-temperature-data', async (importOriginal) => {
   };
 });
 
+vi.mock('@/lib/sea-level-data', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/sea-level-data')>();
+  return {
+    ...actual,
+    fetchSeaLevelStory: vi.fn().mockResolvedValue({
+      stationName: 'The Battery',
+      points: [
+        { year: 1856, meanSeaLevelMeters: -0.3635, monthCount: 12 },
+        { year: 1920, meanSeaLevelMeters: -0.1463, monthCount: 7 },
+        { year: 2025, meanSeaLevelMeters: 0.1179, monthCount: 12 },
+      ],
+      yearCount: 155,
+      missingYearCount: 15,
+      firstYear: { year: 1856, meanSeaLevelMeters: -0.3635, monthCount: 12 },
+      lastYear: { year: 2025, meanSeaLevelMeters: 0.1179, monthCount: 12 },
+      highest: { year: 2024, meanSeaLevelMeters: 0.1993, monthCount: 12 },
+      lowest: { year: 1874, meanSeaLevelMeters: -0.3868, monthCount: 12 },
+      riseMeters: 0.4814,
+      riseInches: 18.95,
+      trendMillimetresPerYear: 2.9473,
+      trendStartMeters: -0.3934,
+      trendEndMeters: 0.1047,
+      highestYearsStartYear: 2010,
+    }),
+  };
+});
+
 describe('MicrositePage', () => {
   it('renders the jobless-rate story with narrative, chart, and sources', async () => {
     const stream = await renderToReadableStream(
@@ -324,6 +351,36 @@ describe('MicrositePage', () => {
         title: 'US temperature record - usa-data-lab',
         description: expect.any(String),
         url: '/energy/us-temperature-record/',
+        type: 'article',
+      },
+    });
+  });
+
+  it('renders the battery-sea-level story with its chart, stat cards, and sources', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('battery-sea-level'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain('has risen 19 inches since 1856');
+    expect(html).toContain('href="/environment"');
+    expect(html).toContain('+0.48 m');
+    expect(html).toContain('+0.12 m');
+    expect(html).toContain('2.95 mm a year');
+    expect(html).toContain('Tides and Currents station 8518750, The Battery (NOAA CO-OPS)');
+    expect(html).toContain('aria-label="Breadcrumb"');
+    expect(html.match(/<h1[^>]*>/g) ?? []).toHaveLength(1);
+  });
+
+  it('returns a unique document title for the battery-sea-level microsite', async () => {
+    await expect(
+      generateMetadata({ params: Promise.resolve(paramsFor('battery-sea-level')) }),
+    ).resolves.toEqual({
+      title: 'Battery sea level - usa-data-lab',
+      description: expect.any(String),
+      openGraph: {
+        title: 'Battery sea level - usa-data-lab',
+        description: expect.any(String),
+        url: '/environment/battery-sea-level/',
         type: 'article',
       },
     });
