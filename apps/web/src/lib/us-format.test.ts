@@ -7,6 +7,7 @@ import {
   formatFahrenheitChange,
   formatMagnitude,
   formatPercent,
+  formatPercentTwoDecimals,
   formatPointChange,
 } from './us-format';
 
@@ -22,6 +23,14 @@ describe('formatPointChange', () => {
     expect(formatPointChange(-10.4)).toBe('-10.4 pts');
     expect(formatPointChange(1.2)).toBe('+1.2 pts');
     expect(formatPointChange(0)).toBe('0.0 pts');
+  });
+});
+
+describe('formatPercentTwoDecimals', () => {
+  it('keeps two decimals so a small move still shows', () => {
+    expect(formatPercentTwoDecimals(3.49)).toBe('3.49%');
+    expect(formatPercentTwoDecimals(1.556)).toBe('1.56%');
+    expect(formatPercentTwoDecimals(6.594)).toBe('6.59%');
   });
 });
 

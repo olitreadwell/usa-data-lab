@@ -10,6 +10,7 @@ import { MicrositeStory } from '@/components/MicrositeStory';
 import { ReportIssueButton } from '@/components/ReportIssueButton';
 import { SeaLevelDotPlot } from '@/components/SeaLevelDotPlot';
 import { StatCard } from '@/components/StatCard';
+import { TreasuryRateChart } from '@/components/TreasuryRateChart';
 import { UsTemperatureStripChart } from '@/components/UsTemperatureStripChart';
 import {
   bandLabelForPercent,
@@ -26,6 +27,7 @@ import {
   relatedMicrositesFor,
 } from '@/lib/microsites';
 import { fetchSeaLevelStory, type SeaLevelStory } from '@/lib/sea-level-data';
+import { fetchTreasuryRateStory, type TreasuryRateStory } from '@/lib/treasury-rate-data';
 import {
   formatCount,
   formatFahrenheit,
@@ -34,6 +36,7 @@ import {
   formatMetresChange,
   formatMillimetresPerYear,
   formatPercent,
+  formatPercentTwoDecimals,
   formatPointChange,
 } from '@/lib/us-format';
 import { fetchUsTemperatureStory, type UsTemperatureStory } from '@/lib/us-temperature-data';
@@ -140,6 +143,7 @@ interface StoryData {
   obesity: CdcObesityStory | null;
   temperature: UsTemperatureStory | null;
   seaLevel: SeaLevelStory | null;
+  treasuryRate: TreasuryRateStory | null;
 }
 
 /**
@@ -159,6 +163,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       obesity: null,
       temperature: null,
       seaLevel: null,
+      treasuryRate: null,
     };
   }
   if (slug === 'cdc-county-obesity') {
@@ -168,6 +173,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       obesity: await fetchCdcObesityStory(),
       temperature: null,
       seaLevel: null,
+      treasuryRate: null,
     };
   }
   if (slug === 'us-temperature-record') {
@@ -177,6 +183,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       obesity: null,
       temperature: await fetchUsTemperatureStory(),
       seaLevel: null,
+      treasuryRate: null,
     };
   }
   if (slug === 'battery-sea-level') {
@@ -186,6 +193,17 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       obesity: null,
       temperature: null,
       seaLevel: await fetchSeaLevelStory(),
+      treasuryRate: null,
+    };
+  }
+  if (slug === 'treasury-interest-rate') {
+    return {
+      jobless: null,
+      hawaii: null,
+      obesity: null,
+      temperature: null,
+      seaLevel: null,
+      treasuryRate: await fetchTreasuryRateStory(),
     };
   }
   return {
@@ -194,6 +212,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
     obesity: null,
     temperature: null,
     seaLevel: null,
+    treasuryRate: null,
   };
 }
 
@@ -400,6 +419,40 @@ function renderStoryContent(
               accent="sky"
               testId="sea-level-trend"
               dataValue={seaLevel.trendMillimetresPerYear}
+            />
+          </dl>
+        ),
+      };
+    }
+    case 'treasury-interest-rate': {
+      const { treasuryRate } = data;
+      if (treasuryRate === null) {
+        return NO_STORY_CONTENT;
+      }
+      return {
+        chart: <TreasuryRateChart points={treasuryRate.points} />,
+        stats: (
+          <dl className="grid gap-6 py-[var(--spacing-2xl)] sm:grid-cols-3">
+            <StatCard
+              label={`Rate in ${treasuryRate.latest.label}`}
+              value={formatPercentTwoDecimals(treasuryRate.latest.ratePercent)}
+              accent="emerald"
+              testId="treasury-latest"
+              dataValue={treasuryRate.latest.ratePercent}
+            />
+            <StatCard
+              label={`Lowest, ${treasuryRate.lowest.label}`}
+              value={formatPercentTwoDecimals(treasuryRate.lowest.ratePercent)}
+              accent="emerald"
+              testId="treasury-lowest"
+              dataValue={treasuryRate.lowest.ratePercent}
+            />
+            <StatCard
+              label="Change since the low"
+              value={formatPointChange(treasuryRate.changeSinceLow)}
+              accent="emerald"
+              testId="treasury-change"
+              dataValue={treasuryRate.changeSinceLow}
             />
           </dl>
         ),

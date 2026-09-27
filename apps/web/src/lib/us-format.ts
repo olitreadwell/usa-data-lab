@@ -9,6 +9,19 @@ export function formatPercent(value: number): string {
 }
 
 /**
+ * Formats a percentage to two decimals, e.g. "3.49%".
+ *
+ * The Treasury publishes its average interest rate to three decimals, so two
+ * keeps a month-to-month move visible where one decimal would round it away.
+ *
+ * @param value - the rate as a number, not a fraction
+ * @returns the formatted string
+ */
+export function formatPercentTwoDecimals(value: number): string {
+  return `${value.toFixed(2)}%`;
+}
+
+/**
  * Formats a signed change in percentage points, e.g. "-10.4 pts".
  *
  * @param value - the change in percentage points

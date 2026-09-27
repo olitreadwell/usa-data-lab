@@ -201,6 +201,32 @@ vi.mock('@/lib/sea-level-data', async (importOriginal) => {
   };
 });
 
+vi.mock('@/lib/treasury-rate-data', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/treasury-rate-data')>();
+  return {
+    ...actual,
+    fetchTreasuryRateStory: vi.fn().mockResolvedValue({
+      points: [
+        { label: 'Jan 2001', ratePercent: 6.594 },
+        { label: 'Jan 2022', ratePercent: 1.556 },
+        { label: 'Aug 2026', ratePercent: 3.49 },
+      ],
+      monthCount: 308,
+      first: { label: 'Jan 2001', ratePercent: 6.594 },
+      latest: { label: 'Aug 2026', ratePercent: 3.49 },
+      highest: { label: 'Jan 2001', ratePercent: 6.594 },
+      lowest: { label: 'Jan 2022', ratePercent: 1.556 },
+      changeSinceLow: 1.934,
+      highestSince: { label: 'May 2009', ratePercent: 3.524 },
+      belowRateCount: 28,
+      belowRateFirst: { label: 'May 2020', ratePercent: 1.842 },
+      belowRateLast: { label: 'Aug 2022', ratePercent: 1.976 },
+      firstDecadeMean: 4.656,
+      recentDecadeMean: 2.51,
+    }),
+  };
+});
+
 describe('MicrositePage', () => {
   it('renders the jobless-rate story with narrative, chart, and sources', async () => {
     const stream = await renderToReadableStream(
@@ -381,6 +407,39 @@ describe('MicrositePage', () => {
         title: 'Battery sea level - usa-data-lab',
         description: expect.any(String),
         url: '/environment/battery-sea-level/',
+        type: 'article',
+      },
+    });
+  });
+
+  it('renders the treasury-interest-rate story with its chart, stat cards, and sources', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('treasury-interest-rate'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain('fell to 1.56 percent in 2022 and has climbed since');
+    expect(html).toContain('href="/economy"');
+    expect(html).toContain('Rate in Aug 2026');
+    expect(html).toContain('3.49%');
+    expect(html).toContain('1.56%');
+    expect(html).toContain('+1.9 pts');
+    expect(html).toContain(
+      'Average Interest Rates on U.S. Treasury Securities (US Treasury Fiscal Data)',
+    );
+    expect(html).toContain('aria-label="Breadcrumb"');
+    expect(html.match(/<h1[^>]*>/g) ?? []).toHaveLength(1);
+  });
+
+  it('returns a unique document title for the treasury-interest-rate microsite', async () => {
+    await expect(
+      generateMetadata({ params: Promise.resolve(paramsFor('treasury-interest-rate')) }),
+    ).resolves.toEqual({
+      title: 'Treasury interest rate - usa-data-lab',
+      description: expect.any(String),
+      openGraph: {
+        title: 'Treasury interest rate - usa-data-lab',
+        description: expect.any(String),
+        url: '/economy/treasury-interest-rate/',
         type: 'article',
       },
     });

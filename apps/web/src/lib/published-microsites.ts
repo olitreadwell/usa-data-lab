@@ -8,4 +8,5 @@ export const PUBLISHED_MICROSITES: readonly string[] = [
   'cdc-county-obesity',
   'us-temperature-record',
   'battery-sea-level',
+  'treasury-interest-rate',
 ];

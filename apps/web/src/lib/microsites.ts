@@ -14,6 +14,7 @@ export type MicrositeDataSource =
   | 'Centers for Disease Control (CDC)'
   | 'Federal Aviation Administration'
   | 'National Oceanic and Atmospheric Administration (NOAA)'
+  | 'US Department of the Treasury'
   | 'data.gov'
   | 'OpenStreetMap'
   | 'Wikipedia & Wikidata';
@@ -384,6 +385,58 @@ export const MICROSITES: MicrositeConfig[] = withHiddenMicrositesRemoved<Microsi
       {
         label: 'Tidal datums and the National Tidal Datum Epoch (NOAA CO-OPS)',
         url: 'https://tidesandcurrents.noaa.gov/datum_options.html',
+        kind: 'data',
+      },
+    ],
+  },
+  {
+    slug: 'treasury-interest-rate',
+    keyFacts: [
+      'The file opens at 6.59 percent in January 2001, its highest month.',
+      'The lowest month is 1.56 percent in January 2022, at the end of a twenty-year slide.',
+      '28 months dipped below 2 percent, all of them between May 2020 and August 2022.',
+      'The first ten years average 4.66 percent against 2.51 percent for the last ten.',
+    ],
+    howToRead:
+      'The line is the average rate the whole debt carries, one point per month from January 2001 to the newest month the agency has published. The dashed line marks the lowest month in the file.',
+    sourceUrl:
+      'https://fiscaldata.treasury.gov/datasets/average-interest-rates-treasury-securities/',
+    label: 'Treasury interest rate',
+    eyebrow: 'the rate on the federal debt',
+    title:
+      'The average rate on the federal debt fell to 1.56 percent in 2022 and has climbed since.',
+    description:
+      'The Treasury publishes the average interest rate on the interest-bearing federal debt each month, back to January 2001. It ran from 6.59 percent that month down to 1.56 percent in January 2022, and has climbed since.',
+    paragraphs: [
+      'The number comes from the Bureau of the Fiscal Service, which divides the interest owed on the debt by the amount outstanding. Bills, notes, bonds, savings bonds, and the securities government trust funds hold all feed into that one figure. The agency leaves Treasury Inflation-Protected Securities and floating rate notes out of the total, so the rate describes the rest of the portfolio.',
+      'The average moves slowly because most of the debt was issued years ago. A bill sold this month reprices at current rates, while a thirty-year bond sold in 2019 still pays the coupon it was issued with, and both sit in the same average. New debt arriving below the average pulls it down, which is what happened for twenty years: the rate ran from 6.59 percent in January 2001 to 1.56 percent in January 2022.',
+      'The climb back has been quicker than the slide. The rate passed 3 percent again in October 2023, 21 months after the low, and every month since has stayed above 2 percent. It is still below where the file opens, 6.59 percent in January 2001, and a new month joins the file at the start of the month after the agency closes its books.',
+    ],
+    accent: 'emerald',
+    dataSource: 'US Department of the Treasury',
+    chartType: 'Line chart',
+    category: 'Economy & business',
+    dataNote:
+      'Data: US Treasury Fiscal Data, the Average Interest Rates on U.S. Treasury Securities dataset (v2/accounting/od/avg_interest_rates), read at deploy time without a key. One request returns the whole published run, one row per month, filtered to security_type_desc "Interest-bearing Debt" and security_desc "Total Interest-bearing Debt", which is the portfolio total rather than the rate on the securities sold today. The agency calculates that total as aggregate interest payments divided by the total debt, and leaves Treasury Inflation-Protected Securities and floating rate notes out of it. The dataset is released monthly and each row is dated to the last day of its month, so the newest row is the last month the agency has closed. A row published without a value would be dropped rather than counted as zero. If the API is slow or unreachable at build time the page falls back to the committed snapshot in apps/web/src/fixtures and says so in the build log.',
+    references: [
+      {
+        label: 'Average Interest Rates on U.S. Treasury Securities (US Treasury Fiscal Data)',
+        url: 'https://fiscaldata.treasury.gov/datasets/average-interest-rates-treasury-securities/',
+        kind: 'data',
+      },
+      {
+        label: 'The API endpoint this site reads',
+        url: 'https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v2/accounting/od/avg_interest_rates',
+        kind: 'data',
+      },
+      {
+        label: 'Monthly Statement of the Public Debt (US Treasury Fiscal Data)',
+        url: 'https://fiscaldata.treasury.gov/datasets/monthly-statement-public-debt/',
+        kind: 'data',
+      },
+      {
+        label: 'Treasury marketable securities and how they are sold (TreasuryDirect)',
+        url: 'https://www.treasurydirect.gov/marketable-securities/',
         kind: 'data',
       },
     ],

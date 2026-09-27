@@ -57,12 +57,14 @@ describe('relatedMicrositesFor', () => {
     }
   });
 
-  it('returns no related stories for the only economy story', () => {
+  it('pairs the two economy stories with each other', () => {
     const jobless = MICROSITES.find((microsite) => microsite.slug === 'jobless-rate');
     if (jobless === undefined) {
       throw new Error('jobless-rate missing');
     }
-    expect(relatedMicrositesFor(jobless)).toHaveLength(0);
+    expect(relatedMicrositesFor(jobless).map((microsite) => microsite.slug)).toEqual([
+      'treasury-interest-rate',
+    ]);
   });
 });
 
