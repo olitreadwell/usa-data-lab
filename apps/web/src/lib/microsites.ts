@@ -13,6 +13,7 @@ export type MicrositeDataSource =
   | 'Environmental Protection Agency'
   | 'Centers for Disease Control (CDC)'
   | 'Federal Aviation Administration'
+  | 'Federal Emergency Management Agency (FEMA)'
   | 'National Oceanic and Atmospheric Administration (NOAA)'
   | 'US Department of the Treasury'
   | 'data.gov'
@@ -437,6 +438,58 @@ export const MICROSITES: MicrositeConfig[] = withHiddenMicrositesRemoved<Microsi
       {
         label: 'Treasury marketable securities and how they are sold (TreasuryDirect)',
         url: 'https://www.treasurydirect.gov/marketable-securities/',
+        kind: 'data',
+      },
+    ],
+  },
+  {
+    slug: 'fema-disaster-declarations',
+    keyFacts: [
+      'Fire is the most common incident type in the file: 1,785 of the 5,272 declarations.',
+      '2020 holds the single-year record at 315, and 165 of those are filed for COVID-19.',
+      'March 2020 alone carries 142 declarations, more than any other month in the file.',
+      'Fire Management, the program behind most fire records, begins in 2002 and holds 1,213 of them.',
+      'California (397) and Texas (392) carry more declarations than any other state.',
+    ],
+    howToRead:
+      'Each bar is one calendar year, the grey base is every other hazard and the indigo band on top is fire.',
+    sourceUrl: 'https://www.fema.gov/openfema-data-page/fema-web-disaster-declarations-v1',
+    label: 'FEMA declarations',
+    eyebrow: 'FEMA disaster declarations',
+    title:
+      "Fire is the most common hazard in FEMA's disaster declarations, and 2020 was its busiest year.",
+    description:
+      'FEMA publishes one record for every disaster it declares, 5,272 of them since 1953. Fire leads the incident types at 1,785 declarations, and 2020 holds the single-year record at 315, with 165 filed for COVID-19.',
+    paragraphs: [
+      'The Federal Emergency Management Agency writes every declaration it makes into an open file, one row per declaration, and the rows run back to a tornado that hit Georgia in May 1953. A row names the program the declaration was made under, which is usually a Major Disaster or an Emergency, and the hazard behind it. This page counts those rows and splits each year into fire and everything else.',
+      'Fire is the largest single hazard on the file. The 1950s and 1960s hold two and three fire records each, the 2000s hold 574, and fire has stayed near two fifths of the file since 1990. The Fire Management program behind most of those records arrives in 2002, the year the older Fire Suppression line ends, and it carries 1,213 fire declarations.',
+      'The biggest spike in the file is the pandemic. FEMA made 315 declarations in 2020, and 165 of them are filed as a biological incident, each one titled COVID-19 Pandemic. March 2020 alone holds 142 of them, more than any other month in the file. The newest year is not finished: 2026 holds 133 declarations so far, and its bar on the chart fills as the agency publishes more.',
+    ],
+    accent: 'indigo',
+    dataSource: 'Federal Emergency Management Agency (FEMA)',
+    chartType: 'Bar chart',
+    category: 'Society & community',
+    dataNote:
+      "Data: OpenFEMA, the Fema Web Disaster Declarations file (v1/FemaWebDisasterDeclarations), read at deploy time without a key. One request with an inline count covers the whole file, which holds one row per declaration from May 1953 to the newest declaration, sorted by the agency's own declaration number. A declaration is filed under one of four programs (Major Disaster, Emergency, Fire Management, or Fire Suppression) and one hazard, and the chart counts the hazard: rows whose incident type is Fire are the indigo band, everything else is the grey base. The newest year is a partial year, so its bar is short by construction and grows with each declaration the agency publishes. A response that answers with fewer rows than the agency's own count stops the build rather than charting a truncated file. If the endpoint is slow or unreachable at build time the page falls back to the committed snapshot in apps/web/src/fixtures and says so in the build log.",
+    references: [
+      {
+        label: 'Fema Web Disaster Declarations, one row per declaration (FEMA OpenFEMA)',
+        url: 'https://www.fema.gov/openfema-data-page/fema-web-disaster-declarations-v1',
+        kind: 'data',
+      },
+      {
+        label: 'The API endpoint this site reads',
+        url: 'https://www.fema.gov/api/open/v1/FemaWebDisasterDeclarations',
+        kind: 'data',
+      },
+      {
+        label: 'Disaster Declarations Summaries, the county-level companion file (FEMA OpenFEMA)',
+        url: 'https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2',
+        kind: 'data',
+      },
+      {
+        label: "OpenFEMA, the agency's open data programme",
+        url: 'https://www.fema.gov/about/reports-and-data/openfema',
         kind: 'data',
       },
     ],

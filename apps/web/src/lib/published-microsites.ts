@@ -9,4 +9,5 @@ export const PUBLISHED_MICROSITES: readonly string[] = [
   'us-temperature-record',
   'battery-sea-level',
   'treasury-interest-rate',
+  'fema-disaster-declarations',
 ];

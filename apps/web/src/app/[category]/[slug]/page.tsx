@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import { CdcObesityChart } from '@/components/CdcObesityChart';
+import { FemaDeclarationsChart } from '@/components/FemaDeclarationsChart';
 import { HawaiiQuakesChart } from '@/components/HawaiiQuakesChart';
 import { JoblessChart } from '@/components/JoblessChart';
 import { MicrositeStory } from '@/components/MicrositeStory';
@@ -17,6 +18,7 @@ import {
   type CdcObesityStory,
   fetchCdcObesityStory,
 } from '@/lib/cdc-obesity-data';
+import { type FemaDeclarationStory, fetchFemaDeclarationStory } from '@/lib/fema-declarations-data';
 import { fetchHawaiiQuakes, type HawaiiQuakeStory } from '@/lib/hawaii-quakes-data';
 import { fetchJoblessSeries, type JoblessSeries } from '@/lib/jobless-data';
 import {
@@ -144,6 +146,7 @@ interface StoryData {
   temperature: UsTemperatureStory | null;
   seaLevel: SeaLevelStory | null;
   treasuryRate: TreasuryRateStory | null;
+  fema: FemaDeclarationStory | null;
 }
 
 /**
@@ -164,6 +167,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       temperature: null,
       seaLevel: null,
       treasuryRate: null,
+      fema: null,
     };
   }
   if (slug === 'cdc-county-obesity') {
@@ -174,6 +178,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       temperature: null,
       seaLevel: null,
       treasuryRate: null,
+      fema: null,
     };
   }
   if (slug === 'us-temperature-record') {
@@ -184,6 +189,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       temperature: await fetchUsTemperatureStory(),
       seaLevel: null,
       treasuryRate: null,
+      fema: null,
     };
   }
   if (slug === 'battery-sea-level') {
@@ -194,6 +200,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       temperature: null,
       seaLevel: await fetchSeaLevelStory(),
       treasuryRate: null,
+      fema: null,
     };
   }
   if (slug === 'treasury-interest-rate') {
@@ -204,6 +211,18 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       temperature: null,
       seaLevel: null,
       treasuryRate: await fetchTreasuryRateStory(),
+      fema: null,
+    };
+  }
+  if (slug === 'fema-disaster-declarations') {
+    return {
+      jobless: null,
+      hawaii: null,
+      obesity: null,
+      temperature: null,
+      seaLevel: null,
+      treasuryRate: null,
+      fema: await fetchFemaDeclarationStory(),
     };
   }
   return {
@@ -213,6 +232,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
     temperature: null,
     seaLevel: null,
     treasuryRate: null,
+    fema: null,
   };
 }
 
@@ -453,6 +473,48 @@ function renderStoryContent(
               accent="emerald"
               testId="treasury-change"
               dataValue={treasuryRate.changeSinceLow}
+            />
+          </dl>
+        ),
+      };
+    }
+    case 'fema-disaster-declarations': {
+      const { fema } = data;
+      if (fema === null) {
+        return NO_STORY_CONTENT;
+      }
+      return {
+        chart: (
+          <FemaDeclarationsChart
+            bars={fema.bars}
+            declarationCount={fema.declarationCount}
+            fireCount={fema.fireCount}
+            newestYear={fema.newestYear}
+            newestYearCount={fema.newestYearCount}
+          />
+        ),
+        stats: (
+          <dl className="grid gap-6 py-[var(--spacing-2xl)] sm:grid-cols-3">
+            <StatCard
+              label="Declarations in the file"
+              value={formatCount(fema.declarationCount)}
+              accent="indigo"
+              testId="fema-count"
+              dataValue={fema.declarationCount}
+            />
+            <StatCard
+              label={`Busiest year, ${String(fema.busiestYear.year)}`}
+              value={formatCount(fema.busiestYear.total)}
+              accent="indigo"
+              testId="fema-busiest-year"
+              dataValue={fema.busiestYear.total}
+            />
+            <StatCard
+              label="Declarations for fire"
+              value={formatCount(fema.fireCount)}
+              accent="indigo"
+              testId="fema-fire"
+              dataValue={fema.fireCount}
             />
           </dl>
         ),

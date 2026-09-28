@@ -227,6 +227,40 @@ vi.mock('@/lib/treasury-rate-data', async (importOriginal) => {
   };
 });
 
+vi.mock('@/lib/fema-declarations-data', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/fema-declarations-data')>();
+  return {
+    ...actual,
+    fetchFemaDeclarationStory: vi.fn().mockResolvedValue({
+      bars: [
+        { year: 1953, label: '1953', fire: 2, other: 92, total: 94 },
+        { year: 2020, label: '2020', fire: 82, other: 233, total: 315 },
+        { year: 2026, label: '2026', fire: 66, other: 67, total: 133 },
+      ],
+      declarationCount: 5272,
+      firstYear: 1953,
+      newestYear: 2026,
+      newestYearCount: 133,
+      fireCount: 1785,
+      fireSharePercent: 33.86,
+      busiestYear: { year: 2020, total: 315, fire: 82 },
+      busiestMonthLabel: 'Mar 2020',
+      busiestMonthCount: 142,
+      covidCount: 165,
+      fireManagementCount: 1213,
+      fireManagementFirstYear: 2002,
+      topStates: [
+        { stateCode: 'CA', stateName: 'California', count: 397 },
+        { stateCode: 'TX', stateName: 'Texas', count: 392 },
+      ],
+      decadeFireShare: [
+        { decade: 1950, total: 94, fire: 2 },
+        { decade: 2020, total: 1073, fire: 400 },
+      ],
+    }),
+  };
+});
+
 describe('MicrositePage', () => {
   it('renders the jobless-rate story with narrative, chart, and sources', async () => {
     const stream = await renderToReadableStream(
@@ -428,6 +462,38 @@ describe('MicrositePage', () => {
     );
     expect(html).toContain('aria-label="Breadcrumb"');
     expect(html.match(/<h1[^>]*>/g) ?? []).toHaveLength(1);
+  });
+
+  it('renders the fema-disaster-declarations story with its chart, stat cards, and sources', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('fema-disaster-declarations'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain('Fire is the most common hazard in FEMA&#x27;s disaster declarations');
+    expect(html).toContain('href="/society"');
+    expect(html).toContain('5,272');
+    expect(html).toContain('Busiest year, 2020');
+    expect(html).toContain('1,785');
+    expect(html).toContain(
+      'Fema Web Disaster Declarations, one row per declaration (FEMA OpenFEMA)',
+    );
+    expect(html).toContain('aria-label="Breadcrumb"');
+    expect(html.match(/<h1[^>]*>/g) ?? []).toHaveLength(1);
+  });
+
+  it('returns a unique document title for the fema-disaster-declarations microsite', async () => {
+    await expect(
+      generateMetadata({ params: Promise.resolve(paramsFor('fema-disaster-declarations')) }),
+    ).resolves.toEqual({
+      title: 'FEMA declarations - usa-data-lab',
+      description: expect.any(String),
+      openGraph: {
+        title: 'FEMA declarations - usa-data-lab',
+        description: expect.any(String),
+        url: '/society/fema-disaster-declarations/',
+        type: 'article',
+      },
+    });
   });
 
   it('returns a unique document title for the treasury-interest-rate microsite', async () => {
