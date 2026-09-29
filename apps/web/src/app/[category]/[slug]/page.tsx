@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 
 import { CdcObesityChart } from '@/components/CdcObesityChart';
 import { FemaDeclarationsChart } from '@/components/FemaDeclarationsChart';
+import { FoodRecallsChart } from '@/components/FoodRecallsChart';
 import { HawaiiQuakesChart } from '@/components/HawaiiQuakesChart';
 import { JoblessChart } from '@/components/JoblessChart';
 import { MicrositeStory } from '@/components/MicrositeStory';
@@ -19,6 +20,7 @@ import {
   fetchCdcObesityStory,
 } from '@/lib/cdc-obesity-data';
 import { type FemaDeclarationStory, fetchFemaDeclarationStory } from '@/lib/fema-declarations-data';
+import { fetchFoodRecallStory, type FoodRecallStory } from '@/lib/food-recalls-data';
 import { fetchHawaiiQuakes, type HawaiiQuakeStory } from '@/lib/hawaii-quakes-data';
 import { fetchJoblessSeries, type JoblessSeries } from '@/lib/jobless-data';
 import {
@@ -147,6 +149,7 @@ interface StoryData {
   seaLevel: SeaLevelStory | null;
   treasuryRate: TreasuryRateStory | null;
   fema: FemaDeclarationStory | null;
+  foodRecalls: FoodRecallStory | null;
 }
 
 /**
@@ -168,6 +171,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       seaLevel: null,
       treasuryRate: null,
       fema: null,
+      foodRecalls: null,
     };
   }
   if (slug === 'cdc-county-obesity') {
@@ -179,6 +183,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       seaLevel: null,
       treasuryRate: null,
       fema: null,
+      foodRecalls: null,
     };
   }
   if (slug === 'us-temperature-record') {
@@ -190,6 +195,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       seaLevel: null,
       treasuryRate: null,
       fema: null,
+      foodRecalls: null,
     };
   }
   if (slug === 'battery-sea-level') {
@@ -201,6 +207,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       seaLevel: await fetchSeaLevelStory(),
       treasuryRate: null,
       fema: null,
+      foodRecalls: null,
     };
   }
   if (slug === 'treasury-interest-rate') {
@@ -212,6 +219,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       seaLevel: null,
       treasuryRate: await fetchTreasuryRateStory(),
       fema: null,
+      foodRecalls: null,
     };
   }
   if (slug === 'fema-disaster-declarations') {
@@ -223,6 +231,19 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       seaLevel: null,
       treasuryRate: null,
       fema: await fetchFemaDeclarationStory(),
+      foodRecalls: null,
+    };
+  }
+  if (slug === 'fda-food-recalls') {
+    return {
+      jobless: null,
+      hawaii: null,
+      obesity: null,
+      temperature: null,
+      seaLevel: null,
+      treasuryRate: null,
+      fema: null,
+      foodRecalls: await fetchFoodRecallStory(),
     };
   }
   return {
@@ -233,6 +254,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
     seaLevel: null,
     treasuryRate: null,
     fema: null,
+    foodRecalls: null,
   };
 }
 
@@ -515,6 +537,48 @@ function renderStoryContent(
               accent="indigo"
               testId="fema-fire"
               dataValue={fema.fireCount}
+            />
+          </dl>
+        ),
+      };
+    }
+    case 'fda-food-recalls': {
+      const { foodRecalls } = data;
+      if (foodRecalls === null) {
+        return NO_STORY_CONTENT;
+      }
+      return {
+        chart: (
+          <FoodRecallsChart
+            bars={foodRecalls.bars}
+            recallCount={foodRecalls.recallCount}
+            classOneCount={foodRecalls.classOneCount}
+            newestYear={foodRecalls.newestYear}
+            newestYearCount={foodRecalls.newestYearCount}
+          />
+        ),
+        stats: (
+          <dl className="grid gap-6 py-[var(--spacing-2xl)] sm:grid-cols-3">
+            <StatCard
+              label="Recalls in the file"
+              value={formatCount(foodRecalls.recallCount)}
+              accent="lime"
+              testId="food-recalls-count"
+              dataValue={foodRecalls.recallCount}
+            />
+            <StatCard
+              label={`Class I, ${formatPercent(foodRecalls.classOneSharePercent)} of the file`}
+              value={formatCount(foodRecalls.classOneCount)}
+              accent="lime"
+              testId="food-recalls-class-one"
+              dataValue={foodRecalls.classOneCount}
+            />
+            <StatCard
+              label={`Busiest year, ${String(foodRecalls.busiestYear.year)}`}
+              value={formatCount(foodRecalls.busiestYear.total)}
+              accent="lime"
+              testId="food-recalls-busiest"
+              dataValue={foodRecalls.busiestYear.total}
             />
           </dl>
         ),

@@ -261,7 +261,69 @@ vi.mock('@/lib/fema-declarations-data', async (importOriginal) => {
   };
 });
 
+vi.mock('@/lib/food-recalls-data', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/food-recalls-data')>();
+  return {
+    ...actual,
+    fetchFoodRecallStory: vi.fn().mockResolvedValue({
+      bars: [
+        { year: 2012, label: '2012', classOne: 1053, other: 864, total: 1917 },
+        { year: 2017, label: '2017', classOne: 1151, other: 2052, total: 3203 },
+        { year: 2026, label: '2026', classOne: 366, other: 641, total: 1007 },
+      ],
+      recallCount: 29463,
+      classOneCount: 12965,
+      classOneSharePercent: 44.0,
+      classCounts: [
+        { name: 'Class II', count: 14736, sharePercent: 50.0 },
+        { name: 'Class I', count: 12965, sharePercent: 44.0 },
+        { name: 'Class III', count: 1761, sharePercent: 6.0 },
+      ],
+      firstReportDateLabel: '20 June 2012',
+      newestReportDateLabel: '23 September 2026',
+      firstYear: 2012,
+      newestYear: 2026,
+      newestYearCount: 1007,
+      firstYearCount: 1917,
+      busiestYear: { year: 2017, total: 3203, classOne: 1151, other: 2052 },
+      voluntaryCount: 29060,
+      voluntarySharePercent: 98.6,
+      mandatedCount: 396,
+    }),
+  };
+});
+
 describe('MicrositePage', () => {
+  it('renders the fda-food-recalls story with its chart, stat cards, and sources', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('fda-food-recalls'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain('Class I covers 44 percent of the 29,463 food recalls');
+    expect(html).toContain('href="/agriculture"');
+    expect(html).toContain('29,463');
+    expect(html).toContain('Busiest year, 2017');
+    expect(html).toContain('12,965');
+    expect(html).toContain('openFDA food enforcement reports, one record per recall (FDA)');
+    expect(html).toContain('aria-label="Breadcrumb"');
+    expect(html.match(/<h1[^>]*>/g) ?? []).toHaveLength(1);
+  });
+
+  it('returns a unique document title for the fda-food-recalls microsite', async () => {
+    await expect(
+      generateMetadata({ params: Promise.resolve(paramsFor('fda-food-recalls')) }),
+    ).resolves.toEqual({
+      title: 'FDA food recalls - usa-data-lab',
+      description: expect.any(String),
+      openGraph: {
+        title: 'FDA food recalls - usa-data-lab',
+        description: expect.any(String),
+        url: '/agriculture/fda-food-recalls/',
+        type: 'article',
+      },
+    });
+  });
+
   it('renders the jobless-rate story with narrative, chart, and sources', async () => {
     const stream = await renderToReadableStream(
       <MicrositePage params={Promise.resolve(paramsFor('jobless-rate'))} />,

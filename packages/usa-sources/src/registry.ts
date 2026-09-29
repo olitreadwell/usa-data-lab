@@ -3,6 +3,7 @@ import { cdcCountyObesityAdapter } from './cdcCountyObesity';
 import { femaDisasterDeclarationsAdapter } from './femaDisasterDeclarations';
 import { nceiAnnualTemperatureAdapter } from './nceiAnnualTemperature';
 import { noaaSeaLevelAdapter } from './noaaSeaLevel';
+import { openFdaFoodRecallsAdapter } from './openFdaFoodRecalls';
 import { treasuryAvgInterestRateAdapter } from './treasuryAvgInterestRate';
 import type { UsDataAdapter, UsFetchOptions, UsSourceProbe } from './types';
 import { usgsHawaiiEarthquakesAdapter } from './usgsEarthquakes';
@@ -16,6 +17,7 @@ export const US_DATA_SOURCES: UsDataAdapter<unknown>[] = [
   noaaSeaLevelAdapter,
   treasuryAvgInterestRateAdapter,
   femaDisasterDeclarationsAdapter,
+  openFdaFoodRecallsAdapter,
 ];
 
 /** Looks up a source adapter by id. */

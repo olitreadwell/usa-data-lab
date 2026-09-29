@@ -10,4 +10,5 @@ export const PUBLISHED_MICROSITES: readonly string[] = [
   'battery-sea-level',
   'treasury-interest-rate',
   'fema-disaster-declarations',
+  'fda-food-recalls',
 ];

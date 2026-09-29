@@ -14,6 +14,7 @@ export type MicrositeDataSource =
   | 'Centers for Disease Control (CDC)'
   | 'Federal Aviation Administration'
   | 'Federal Emergency Management Agency (FEMA)'
+  | 'US Food and Drug Administration (FDA)'
   | 'National Oceanic and Atmospheric Administration (NOAA)'
   | 'US Department of the Treasury'
   | 'data.gov'
@@ -490,6 +491,57 @@ export const MICROSITES: MicrositeConfig[] = withHiddenMicrositesRemoved<Microsi
       {
         label: "OpenFEMA, the agency's open data programme",
         url: 'https://www.fema.gov/about/reports-and-data/openfema',
+        kind: 'data',
+      },
+    ],
+  },
+  {
+    slug: 'fda-food-recalls',
+    keyFacts: [
+      '12,965 of the 29,463 recalls are Class I, 44 percent of the file.',
+      '2017 was the busiest year at 3,203 recalls, 1,151 of them Class I.',
+      'A firm recalled its own product in 29,060 of the 29,463 cases; the agency ordered 396.',
+      'Class II, the grade for a problem that is usually reversible, covers 14,736 recalls.',
+      'The file starts on 20 June 2012 and runs to 23 September 2026, the newest date the agency has published.',
+    ],
+    howToRead:
+      'Each bar is one calendar year, the grey base is Class II and Class III and the lime band on top is Class I.',
+    sourceUrl: 'https://open.fda.gov/apis/food/enforcement/',
+    label: 'FDA food recalls',
+    eyebrow: 'FDA food recalls',
+    title: 'Class I covers 44 percent of the 29,463 food recalls FDA has published since 2012.',
+    description:
+      'The Food and Drug Administration posts every food recall it publishes to an open file: 29,463 of them since June 2012, and 12,965 are Class I, the grade for a product that can seriously harm or kill. Recalls peaked in 2017 at 3,203.',
+    paragraphs: [
+      'Every food recall the Food and Drug Administration publishes lands in the food part of openFDA, one record per recall. A record names the firm, the product, the reason it came off the shelf, and a class that says how dangerous the problem is. The file starts on 20 June 2012 and holds 29,463 recalls up to 23 September 2026.',
+      'Class I means there is a reasonable chance the food will cause serious harm or death, and it covers 12,965 recalls, 44 percent of the file. Class II, where the harm is usually temporary and reversible, covers 14,736. Class III, where the food is unlikely to cause harm at all, covers 1,761.',
+      "The count has moved a lot from year to year. It rose from 1,917 in 2012, a year that starts in June, to a peak of 3,203 in 2017, then fell to 1,181 in 2021. 2026 stands at 1,007 recalls up to 23 September, with the year still open. Nearly every recall is the firm's own decision: 29,060 of the 29,463, while the agency ordered 396.",
+    ],
+    accent: 'lime',
+    dataSource: 'US Food and Drug Administration (FDA)',
+    chartType: 'Bar chart',
+    category: 'Agriculture & food',
+    dataNote:
+      'Data: openFDA, the food enforcement reports endpoint (api.fda.gov/food/enforcement.json), read at deploy time without a key. The endpoint answers one question per request, so the page reads five: the total record count, the recalls published on each date, the same dates filtered to Class I, the count per classification, and the count per initiator. A snapshot whose publication dates cover fewer recalls than the endpoint reports stops the build rather than charting a short file. The agency publishes enforcement reports on Wednesdays, so the newest date moves weekly; the newest year is a partial year and its bar grows with each publication. If the endpoint is slow or unreachable at build time the page falls back to the committed snapshot in apps/web/src/fixtures and says so in the build log.',
+    references: [
+      {
+        label: 'openFDA food enforcement reports, one record per recall (FDA)',
+        url: 'https://open.fda.gov/apis/food/enforcement/',
+        kind: 'data',
+      },
+      {
+        label: 'The API endpoint this site reads',
+        url: 'https://api.fda.gov/food/enforcement.json?limit=1',
+        kind: 'data',
+      },
+      {
+        label: 'Recalls, market withdrawals, and safety alerts (FDA)',
+        url: 'https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts',
+        kind: 'data',
+      },
+      {
+        label: "openFDA, the agency's open data programme",
+        url: 'https://open.fda.gov/',
         kind: 'data',
       },
     ],
