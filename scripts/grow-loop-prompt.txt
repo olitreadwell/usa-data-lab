@@ -17,6 +17,12 @@ renders one story per adapter. This loop keeps the demo alive and grows it.
    published story path, and confirm the numbers in the HTML match the number
    the source returns today. A story that renders the wrong figure is a bug.
 3. Grow. Add exactly one new microsite story, end to end:
+   - Register the source in `~/code/open-data/awesome-open-usa-data` before
+     anything else: add it to `src/data/items.ts` with a real description and
+     a URL that responds, run `pnpm run build:snapshot`, update the seeded
+     source table in `DATA_SOURCES.md`, and ship one
+     `feat(data): add <source>` commit there. The listing links the official
+     publisher. Push that repo's `main`.
    - Pick a source from `packages/usa-sources` that no published microsite
      uses yet. Read `apps/web/src/lib/microsites.ts` to see what is taken.
    - If every vendored source is already used, add one adapter to
@@ -27,6 +33,14 @@ renders one story per adapter. This loop keeps the demo alive and grows it.
      Never edit `packages/usa-sources` by hand.
    - Sources that need a key are allowed when the key is free and the repo
      already reads it from the environment. Keyless still comes first.
+   - Write the tutorial. `docs/experiments/<slug>/TUTORIAL.md`, covering what
+     you build, where the data comes from, the numbered steps, what actually
+     broke, and one variation to try. Add the one-line entry to `TUTORIALS.md`
+     and link it from the experiment's README.
+   - Add the usage docs to the adapter itself: a README section in
+     `~/code/usa-open-data-connectors/packages/usa-sources/` with the public
+     API, the zod schema, a minimal snippet, and the quirks that cost you time.
+     Ship it on the same branch as the adapter.
    - Write the story config in `microsites.ts`, a chart component with a unit
      test, a page-test block, a data note, and references that you have
      checked respond. Then add the slug to `published-microsites.ts`.
@@ -54,4 +68,10 @@ numbers.
   story to make a check pass. Retire a story by removing its slug from
   `published-microsites.ts` and saying why in LOOP-NOTES.md.
 - Same blocker fails three times: log it and exit non-zero.
+- `awesome-open-usa-data` is written by its own daily loop. `git pull --rebase` before committing there, retry a rejected push once, then log the blocker and stop. Never force-push that repo.
+- The connector is not done until the directory listing, the working
+  experiment and the tutorial are all on `main`. If the budget runs out after
+  the experiment but before the tutorial, leave the slug out of
+  `published-microsites.ts` and log the blocker; do not publish an unexplained
+  story.
 - Stop when the one story ships. Cadence: daily via launchd.
