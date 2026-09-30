@@ -3,12 +3,12 @@ import {
   buildFemaDeclarationUrl,
   parseFemaDeclarationPayload,
   UsSourceError,
-} from '@uslab/usa-sources';
+} from '@us-lab/usa-sources';
 import type {
   FemaDeclaration,
   FemaDeclarationCatalogue,
   FemaDeclarationYear,
-} from '@uslab/usa-sources';
+} from '@us-lab/usa-sources';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 

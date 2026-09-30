@@ -1,4 +1,4 @@
-# @nzlab/usa-sources
+# @us-lab/usa-sources
 
 Uniform TypeScript adapters for US public data sources. Keyless first, with a
 strict parser and a committed fixture behind every adapter so a build never
@@ -23,7 +23,7 @@ workspace under that scope already. Renaming the scope is a separate change.
 ## Usage
 
 ```ts
-import { fetchBlsSeries, US_UNEMPLOYMENT_SERIES_ID } from '@nzlab/usa-sources';
+import { fetchBlsSeries, US_UNEMPLOYMENT_SERIES_ID } from '@us-lab/usa-sources';
 
 const rate = await fetchBlsSeries(US_UNEMPLOYMENT_SERIES_ID, {
   startYear: 2006,
@@ -38,7 +38,7 @@ import {
   fetchUsgsEarthquakes,
   USGS_HAWAII_BOUNDS,
   USGS_HAWAII_MIN_MAGNITUDE,
-} from '@nzlab/usa-sources';
+} from '@us-lab/usa-sources';
 
 const earthquakes = await fetchUsgsEarthquakes({
   startDate: '2025-01-01',
@@ -54,7 +54,7 @@ console.log(catalogue.count, catalogue.strongest.place, catalogue.strongest.magn
 import {
   buildCdcCountyObesitySet,
   fetchCdcCountyObesity,
-} from '@nzlab/usa-sources';
+} from '@us-lab/usa-sources';
 
 const set = buildCdcCountyObesitySet(await fetchCdcCountyObesity());
 console.log(set.countyCount, set.lowest.countyName, set.highest.percent, set.national.percent);
@@ -64,7 +64,7 @@ console.log(set.countyCount, set.lowest.countyName, set.highest.percent, set.nat
 import {
   buildNceiAnnualTemperatureSeries,
   fetchNceiAnnualTemperature,
-} from '@nzlab/usa-sources';
+} from '@us-lab/usa-sources';
 
 const series = await fetchNceiAnnualTemperature({ startYear: 1895, endYear: new Date().getFullYear() });
 console.log(series.yearCount, series.warmest.year, series.coldest.valueFahrenheit);
@@ -74,7 +74,7 @@ console.log(series.yearCount, series.warmest.year, series.coldest.valueFahrenhei
 import {
   buildNoaaSeaLevelSeries,
   fetchNoaaSeaLevel,
-} from '@nzlab/usa-sources';
+} from '@us-lab/usa-sources';
 
 const seaLevel = buildNoaaSeaLevelSeries(await fetchNoaaSeaLevel());
 console.log(
@@ -86,14 +86,14 @@ console.log(
 ```
 
 ```ts
-import { fetchTreasuryAvgInterestRates } from '@nzlab/usa-sources';
+import { fetchTreasuryAvgInterestRates } from '@us-lab/usa-sources';
 
 const rates = await fetchTreasuryAvgInterestRates();
 console.log(rates.monthCount, rates.lastMonth.averageInterestRatePercent, rates.lowest.recordDate);
 ```
 
 ```ts
-import { fetchFemaDeclarations } from '@nzlab/usa-sources';
+import { fetchFemaDeclarations } from '@us-lab/usa-sources';
 
 const declarations = await fetchFemaDeclarations();
 console.log(
@@ -194,6 +194,6 @@ console.log(
 ## Checks
 
 ```sh
-npm run test --workspace @nzlab/usa-sources
-npm run test:smoke --workspace @nzlab/usa-sources   # hits the live API
+npm run test --workspace @us-lab/usa-sources
+npm run test:smoke --workspace @us-lab/usa-sources   # hits the live API
 ```

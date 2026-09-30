@@ -1,4 +1,4 @@
-import config from '@uslab/config-eslint/base';
+import config from '@us-lab/config-eslint/base';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 

@@ -1,5 +1,5 @@
 {
-  "name": "@uslab/usa-sources",
+  "name": "@us-lab/usa-sources",
   "version": "0.1.0",
   "private": false,
   "type": "module",
@@ -24,8 +24,8 @@
     "test:smoke": "RUN_SMOKE=1 vitest run src/smoke.test.ts"
   },
   "devDependencies": {
-    "@uslab/config-eslint": "*",
-    "@uslab/config-typescript": "*",
+    "@us-lab/config-eslint": "*",
+    "@us-lab/config-typescript": "*",
     "@types/node": "22.20.4",
     "eslint": "9.39.5",
     "typescript": "6.0.3",

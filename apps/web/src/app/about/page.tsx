@@ -1,4 +1,4 @@
-import { Container, Stack } from '@uslab/ui';
+import { Container, Stack } from '@us-lab/ui';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 

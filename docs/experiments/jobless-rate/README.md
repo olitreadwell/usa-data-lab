@@ -11,7 +11,7 @@ One month in the series is missing entirely.
 
 Bureau of Labor Statistics public data API, series `LNS14000000` (civilian
 unemployment rate, seasonally adjusted, from the Current Population Survey),
-fetched at deploy time via `@uslab/usa-sources`.
+fetched at deploy time via `@us-lab/usa-sources`.
 
 Three things the API forces on the story:
 

@@ -1,1 +1,1 @@
-declare module '@uslab/ui/styles';
+declare module '@us-lab/ui/styles';

@@ -1,5 +1,5 @@
 {
-  "name": "@uslab/ui",
+  "name": "@us-lab/ui",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -39,9 +39,9 @@
     "zod": "^3.23"
   },
   "devDependencies": {
-    "@uslab/config-eslint": "*",
-    "@uslab/config-tailwind": "*",
-    "@uslab/config-typescript": "*",
+    "@us-lab/config-eslint": "*",
+    "@us-lab/config-tailwind": "*",
+    "@us-lab/config-typescript": "*",
     "shadcn": "^4.17.0",
     "@storybook/addon-a11y": "^8.6.0",
     "@storybook/addon-docs": "^8.6.0",

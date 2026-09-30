@@ -3,8 +3,8 @@ import {
   buildTreasuryAvgInterestRateUrl,
   parseTreasuryAvgInterestRatePayload,
   UsSourceError,
-} from '@uslab/usa-sources';
-import type { TreasuryInterestRateMonth, TreasuryInterestRateSeries } from '@uslab/usa-sources';
+} from '@us-lab/usa-sources';
+import type { TreasuryInterestRateMonth, TreasuryInterestRateSeries } from '@us-lab/usa-sources';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 
