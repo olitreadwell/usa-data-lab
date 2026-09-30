@@ -71,6 +71,9 @@
     "@vercel/static-config": {
       "ajv": "^8.18.0"
     },
+    "@vercel/nft": {
+      "brace-expansion": "^5.0.12"
+    },
     "serve-handler": {
       "minimatch": "^3.1.4"
     },
