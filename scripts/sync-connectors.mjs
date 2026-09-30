@@ -6,10 +6,12 @@
 // cannot target a subpackage inside a workspace monorepo, so the single
 // package the site uses is vendored here and kept in sync with this script.
 //
-// The connectors repo publishes under the @nzlab npm scope. This workspace
-// uses @uslab for its own packages, so the copy is renamed on the way in.
-// That rename is part of this script on purpose: a hand-edited vendored copy
-// would drift from the source repo on the next sync.
+// The connectors repo ships under a scope of its own (@nzlab today,
+// @open-data-connectors once the rename lands). This workspace names its
+// packages @us-lab, so the copy is renamed on the way in. The scope is read
+// from the package rather than hardcoded: a script that demanded one exact
+// name broke the day the connectors changed theirs, and the vendored copy is
+// the one thing the daily loop cannot rebuild by hand.
 //
 // Usage:
 //   node scripts/sync-connectors.mjs                      uses ../usa-open-data-connectors
@@ -24,8 +26,9 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(HERE, '..');
 const CONNECTORS_PACKAGE_DIR = 'packages/usa-sources';
 const DEFAULT_FROM = resolve(REPO_ROOT, '..', 'usa-open-data-connectors');
-const SOURCE_PACKAGE_NAME = '@nzlab/usa-sources';
-const LOCAL_PACKAGE_NAME = '@uslab/usa-sources';
+// Matched on the leaf name so any scope is accepted.
+const CONNECTORS_PACKAGE_LEAF = 'usa-sources';
+const LOCAL_PACKAGE_NAME = '@us-lab/usa-sources';
 const SYNCED_FILES = [
   'README.md',
   'eslint.config.mjs',
@@ -40,7 +43,7 @@ const SYNCED_FILES = [
 // Doing it here rather than by hand keeps the copy reproducible.
 const LOCAL_ENTRY_POINT = './src/index.ts';
 const DROPPED_SCRIPTS = ['build', 'prepublishOnly'];
-const TEXT_FILE_PATTERN = /\.(json|mjs|ts)$/;
+const TEXT_FILE_PATTERN = /\.(json|md|mjs|ts)$/;
 
 function usage() {
   console.log('Usage: node scripts/sync-connectors.mjs [--from <connectors-checkout>]');
@@ -63,6 +66,16 @@ function parseArgs(argv) {
 
 function readPackageName(packageJsonPath) {
   return JSON.parse(readFileSync(packageJsonPath, 'utf8')).name;
+}
+
+// The part after the scope, e.g. 'usa-sources' in '@nzlab/usa-sources'.
+function readPackageLeaf(packageName) {
+  return packageName.includes('/') ? packageName.slice(packageName.indexOf('/') + 1) : packageName;
+}
+
+// The scope itself, e.g. '@nzlab'. Empty when the package is unscoped.
+function readPackageScope(packageName) {
+  return packageName.startsWith('@') ? packageName.slice(0, packageName.indexOf('/')) : '';
 }
 
 function listFiles(directory) {
@@ -100,16 +113,16 @@ function stripTsImportExtensions(packageRoot) {
   return rewritten;
 }
 
-// Rewrites the @nzlab scope to @uslab in the copied package, so the vendored
-// name matches this workspace.
-function renameScopeInCopy(packageRoot) {
+// Rewrites whatever scope the connectors package ships under to this
+// workspace's scope, so the vendored name matches.
+function renameScopeInCopy(packageRoot, sourceScope, localScope) {
   const renamed = [];
   for (const filePath of listFiles(packageRoot)) {
     if (!TEXT_FILE_PATTERN.test(filePath)) {
       continue;
     }
     const before = readFileSync(filePath, 'utf8');
-    const after = before.replaceAll('@nzlab/', '@uslab/');
+    const after = before.replaceAll(`${sourceScope}/`, `${localScope}/`);
     if (after !== before) {
       writeFileSync(filePath, after);
       renamed.push(filePath);
@@ -143,8 +156,11 @@ if (!existsSync(join(connectorsPackage, 'package.json'))) {
   process.exit(1);
 }
 
-if (readPackageName(join(connectorsPackage, 'package.json')) !== SOURCE_PACKAGE_NAME) {
-  console.error(`${connectorsPackage} is not the ${SOURCE_PACKAGE_NAME} package.`);
+const sourcePackageName = readPackageName(join(connectorsPackage, 'package.json'));
+if (readPackageLeaf(sourcePackageName) !== CONNECTORS_PACKAGE_LEAF) {
+  console.error(
+    `${connectorsPackage} is ${sourcePackageName}, not the ${CONNECTORS_PACKAGE_LEAF} package.`,
+  );
   process.exit(1);
 }
 
@@ -157,7 +173,11 @@ for (const entry of SYNCED_FILES) {
   cpSync(source, join(REPO_ROOT, CONNECTORS_PACKAGE_DIR, entry), { recursive: true });
 }
 
-const renamed = renameScopeInCopy(join(REPO_ROOT, CONNECTORS_PACKAGE_DIR));
+const renamed = renameScopeInCopy(
+  join(REPO_ROOT, CONNECTORS_PACKAGE_DIR),
+  readPackageScope(sourcePackageName),
+  readPackageScope(LOCAL_PACKAGE_NAME),
+);
 const rewired = stripTsImportExtensions(join(REPO_ROOT, CONNECTORS_PACKAGE_DIR));
 adaptManifestForWorkspace(join(REPO_ROOT, CONNECTORS_PACKAGE_DIR));
 
@@ -169,7 +189,9 @@ if (
 }
 
 console.log(`Synced ${CONNECTORS_PACKAGE_DIR} from ${connectorsRoot}.`);
-console.log(`Renamed the @nzlab scope in ${renamed.length} copied file(s).`);
+console.log(
+  `Renamed the ${readPackageScope(sourcePackageName)} scope to ${readPackageScope(LOCAL_PACKAGE_NAME)} in ${renamed.length} copied file(s).`,
+);
 console.log(`Dropped the .js extension from relative imports in ${rewired.length} file(s).`);
 
 // The rewrites above change line lengths, so re-format the copy with the
