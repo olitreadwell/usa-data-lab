@@ -21,10 +21,10 @@ The usual causes, in order of likelihood:
 
 When it is fixed, confirm the wiring still reports ok:
 
-    $HOME/code/usa-uk-data-stack/loops/loop-wrapper.sh \
-      "$HOME/code/usa-data-lab" \
-      "$HOME/code/usa-data-lab/scripts/grow-loop-prompt.txt" \
-      "$HOME/code/usa-data-lab/scripts/heal-grow-loop-prompt.txt" \
+    $HOME/code/open-data/usa-uk-data-stack/loops/loop-wrapper.sh \
+      "$HOME/code/open-data/usa-data-lab" \
+      "$HOME/code/open-data/usa-data-lab/scripts/grow-loop-prompt.txt" \
+      "$HOME/code/open-data/usa-data-lab/scripts/heal-grow-loop-prompt.txt" \
       usa-data-lab --dry-run
 
 Then append one dated line to `LOOP-NOTES.md` describing the cause and the
