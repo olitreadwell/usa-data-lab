@@ -5,8 +5,8 @@ import {
   NOAA_SEA_LEVEL_FIRST_YEAR,
   parseNoaaSeaLevelPayload,
   UsSourceError,
-} from '@uslab/usa-sources';
-import type { NoaaSeaLevelSeries, NoaaSeaLevelYear } from '@uslab/usa-sources';
+} from '@us-lab/usa-sources';
+import type { NoaaSeaLevelSeries, NoaaSeaLevelYear } from '@us-lab/usa-sources';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 

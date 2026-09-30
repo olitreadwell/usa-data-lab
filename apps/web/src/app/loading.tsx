@@ -1,4 +1,4 @@
-import { Container } from '@uslab/ui';
+import { Container } from '@us-lab/ui';
 
 export default function Loading(): React.ReactElement {
   return (

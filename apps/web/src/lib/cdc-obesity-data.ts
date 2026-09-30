@@ -3,8 +3,8 @@ import {
   buildCdcCountyObesityUrl,
   parseCdcCountyObesityPayload,
   UsSourceError,
-} from '@uslab/usa-sources';
-import type { CdcCountyObesityEstimate, CdcCountyObesitySet } from '@uslab/usa-sources';
+} from '@us-lab/usa-sources';
+import type { CdcCountyObesityEstimate, CdcCountyObesitySet } from '@us-lab/usa-sources';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 

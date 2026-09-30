@@ -37,7 +37,7 @@ doc that disagrees)
 
 ## Conventions
 
-- Components: prefer `@uslab/ui` first (`packages/ui/src/index.ts` is the export
+- Components: prefer `@us-lab/ui` first (`packages/ui/src/index.ts` is the export
   surface). Canonical pattern is `packages/ui/src/components/Button.tsx` +
   `_button.scss` — copy it for new hybrid Tailwind/SCSS components.
 - New interactive primitive (dialog, dropdown, etc): `npx shadcn add <component>` run

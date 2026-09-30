@@ -11,7 +11,7 @@ reached magnitude 4.
 ## Data source
 
 USGS earthquake catalogue, FDSN event query, read at deploy time through
-`@uslab/usa-sources` (`usgsHawaiiEarthquakesAdapter`).
+`@us-lab/usa-sources` (`usgsHawaiiEarthquakesAdapter`).
 
 Four things the query fixes about the story:
 

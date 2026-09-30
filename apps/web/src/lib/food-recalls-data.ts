@@ -3,8 +3,8 @@ import {
   fetchOpenFdaFoodRecalls,
   parseOpenFdaFoodRecallSnapshot,
   UsSourceError,
-} from '@uslab/usa-sources';
-import type { OpenFdaFoodRecallSummary, OpenFdaFoodRecallYear } from '@uslab/usa-sources';
+} from '@us-lab/usa-sources';
+import type { OpenFdaFoodRecallSummary, OpenFdaFoodRecallYear } from '@us-lab/usa-sources';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 

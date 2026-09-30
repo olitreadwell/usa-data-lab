@@ -1,5 +1,5 @@
-import { buildFemaDeclarationCatalogue, parseFemaDeclarationPayload } from '@uslab/usa-sources';
-import type { FemaDeclaration } from '@uslab/usa-sources';
+import { buildFemaDeclarationCatalogue, parseFemaDeclarationPayload } from '@us-lab/usa-sources';
+import type { FemaDeclaration } from '@us-lab/usa-sources';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';

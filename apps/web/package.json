@@ -1,5 +1,5 @@
 {
-  "name": "@uslab/web",
+  "name": "@us-lab/web",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -22,8 +22,8 @@
     "test:a11y": "playwright test --grep @a11y"
   },
   "dependencies": {
-    "@uslab/usa-sources": "*",
-    "@uslab/ui": "*",
+    "@us-lab/usa-sources": "*",
+    "@us-lab/ui": "*",
     "next": "^16.3.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
@@ -32,9 +32,9 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.10.0",
-    "@uslab/config-eslint": "*",
-    "@uslab/config-tailwind": "*",
-    "@uslab/config-typescript": "*",
+    "@us-lab/config-eslint": "*",
+    "@us-lab/config-tailwind": "*",
+    "@us-lab/config-typescript": "*",
     "@playwright/test": "^1.62.1",
     "@tailwindcss/postcss": "^4.3.3",
     "@testing-library/jest-dom": "^6.6.3",

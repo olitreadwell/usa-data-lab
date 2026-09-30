@@ -1,6 +1,6 @@
 // Public surface.
 //
-// What ships from `@uslab/ui`:
+// What ships from `@us-lab/ui`:
 //   - `cn` utility
 //   - Layout primitives (Box, Stack/HStack/VStack, Flex, Grid, Container, Section)
 //   - One canonical Button as a reference implementation of the hybrid pattern

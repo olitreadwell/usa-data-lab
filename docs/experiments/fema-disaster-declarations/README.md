@@ -11,7 +11,7 @@ busiest single year at 315, with 165 of those filed for COVID-19.
 
 OpenFEMA, the Fema Web Disaster Declarations file
 (`v1/FemaWebDisasterDeclarations`), read at deploy time through
-`@uslab/usa-sources` (`femaDisasterDeclarationsAdapter`).
+`@us-lab/usa-sources` (`femaDisasterDeclarationsAdapter`).
 
 Four things about the file shape the story:
 
