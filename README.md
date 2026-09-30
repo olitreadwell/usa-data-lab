@@ -68,9 +68,10 @@ node scripts/sync-connectors.mjs                     # uses ../usa-open-data-con
 node scripts/sync-connectors.mjs --from /path/to/repo
 ```
 
-The script renames the `@nzlab` scope to `@us-lab`, strips the `.js` extension
-from relative imports, and points the package entry at `src/`. All three happen
-in the script rather than by hand, so a sync is reproducible.
+The script renames whatever scope the connectors package ships under to
+`@us-lab`, strips the `.js` extension from relative imports, and points the
+package entry at `src/`. All three happen in the script rather than by hand, so
+a sync is reproducible.
 
 Edit `packages/usa-sources` only by syncing from the connectors repo.
 
