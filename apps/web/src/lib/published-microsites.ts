@@ -11,4 +11,5 @@ export const PUBLISHED_MICROSITES: readonly string[] = [
   'treasury-interest-rate',
   'fema-disaster-declarations',
   'fda-food-recalls',
+  'mississippi-peak-flow',
 ];

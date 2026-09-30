@@ -9,6 +9,7 @@ import { FoodRecallsChart } from '@/components/FoodRecallsChart';
 import { HawaiiQuakesChart } from '@/components/HawaiiQuakesChart';
 import { JoblessChart } from '@/components/JoblessChart';
 import { MicrositeStory } from '@/components/MicrositeStory';
+import { PeakStreamflowChart } from '@/components/PeakStreamflowChart';
 import { ReportIssueButton } from '@/components/ReportIssueButton';
 import { SeaLevelDotPlot } from '@/components/SeaLevelDotPlot';
 import { StatCard } from '@/components/StatCard';
@@ -30,10 +31,16 @@ import {
   MICROSITES,
   relatedMicrositesFor,
 } from '@/lib/microsites';
+import {
+  BIG_PEAK_CUBIC_FEET_PER_SECOND,
+  fetchPeakStreamflowStory,
+  type PeakStreamflowStory,
+} from '@/lib/peak-streamflow-data';
 import { fetchSeaLevelStory, type SeaLevelStory } from '@/lib/sea-level-data';
 import { fetchTreasuryRateStory, type TreasuryRateStory } from '@/lib/treasury-rate-data';
 import {
   formatCount,
+  formatDischargeCubicFeetPerSecond,
   formatFahrenheit,
   formatFahrenheitChange,
   formatMagnitude,
@@ -150,6 +157,7 @@ interface StoryData {
   treasuryRate: TreasuryRateStory | null;
   fema: FemaDeclarationStory | null;
   foodRecalls: FoodRecallStory | null;
+  peakStreamflow: PeakStreamflowStory | null;
 }
 
 /**
@@ -172,6 +180,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       treasuryRate: null,
       fema: null,
       foodRecalls: null,
+      peakStreamflow: null,
     };
   }
   if (slug === 'cdc-county-obesity') {
@@ -184,6 +193,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       treasuryRate: null,
       fema: null,
       foodRecalls: null,
+      peakStreamflow: null,
     };
   }
   if (slug === 'us-temperature-record') {
@@ -196,6 +206,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       treasuryRate: null,
       fema: null,
       foodRecalls: null,
+      peakStreamflow: null,
     };
   }
   if (slug === 'battery-sea-level') {
@@ -208,6 +219,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       treasuryRate: null,
       fema: null,
       foodRecalls: null,
+      peakStreamflow: null,
     };
   }
   if (slug === 'treasury-interest-rate') {
@@ -220,6 +232,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       treasuryRate: await fetchTreasuryRateStory(),
       fema: null,
       foodRecalls: null,
+      peakStreamflow: null,
     };
   }
   if (slug === 'fema-disaster-declarations') {
@@ -232,6 +245,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       treasuryRate: null,
       fema: await fetchFemaDeclarationStory(),
       foodRecalls: null,
+      peakStreamflow: null,
     };
   }
   if (slug === 'fda-food-recalls') {
@@ -244,6 +258,20 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       treasuryRate: null,
       fema: null,
       foodRecalls: await fetchFoodRecallStory(),
+      peakStreamflow: null,
+    };
+  }
+  if (slug === 'mississippi-peak-flow') {
+    return {
+      jobless: null,
+      hawaii: null,
+      obesity: null,
+      temperature: null,
+      seaLevel: null,
+      treasuryRate: null,
+      fema: null,
+      foodRecalls: null,
+      peakStreamflow: await fetchPeakStreamflowStory(),
     };
   }
   return {
@@ -255,6 +283,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
     treasuryRate: null,
     fema: null,
     foodRecalls: null,
+    peakStreamflow: null,
   };
 }
 
@@ -579,6 +608,51 @@ function renderStoryContent(
               accent="lime"
               testId="food-recalls-busiest"
               dataValue={foodRecalls.busiestYear.total}
+            />
+          </dl>
+        ),
+      };
+    }
+    case 'mississippi-peak-flow': {
+      const { peakStreamflow } = data;
+      if (peakStreamflow === null) {
+        return NO_STORY_CONTENT;
+      }
+      return {
+        chart: (
+          <PeakStreamflowChart
+            bars={peakStreamflow.bars}
+            medianDischargeCubicFeetPerSecond={peakStreamflow.medianDischargeCubicFeetPerSecond}
+            bigPeakThresholdCubicFeetPerSecond={BIG_PEAK_CUBIC_FEET_PER_SECOND}
+            bigPeakYears={peakStreamflow.bigPeakYears}
+          />
+        ),
+        stats: (
+          <dl className="grid gap-6 py-[var(--spacing-2xl)] sm:grid-cols-3">
+            <StatCard
+              label={`Record peak, ${peakStreamflow.record.peakDateLabel}`}
+              value={formatDischargeCubicFeetPerSecond(
+                peakStreamflow.record.dischargeCubicFeetPerSecond,
+              )}
+              accent="violet"
+              testId="peak-streamflow-record"
+              dataValue={peakStreamflow.record.dischargeCubicFeetPerSecond}
+            />
+            <StatCard
+              label="Middle water year"
+              value={formatDischargeCubicFeetPerSecond(
+                peakStreamflow.medianDischargeCubicFeetPerSecond,
+              )}
+              accent="violet"
+              testId="peak-streamflow-median"
+              dataValue={peakStreamflow.medianDischargeCubicFeetPerSecond}
+            />
+            <StatCard
+              label="Years above 900,000 cfs"
+              value={`${formatCount(peakStreamflow.bigPeakYears.length)} of ${formatCount(peakStreamflow.yearCount)}`}
+              accent="violet"
+              testId="peak-streamflow-big-years"
+              dataValue={peakStreamflow.bigPeakYears.length}
             />
           </dl>
         ),

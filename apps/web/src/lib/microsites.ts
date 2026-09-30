@@ -546,4 +546,55 @@ export const MICROSITES: MicrositeConfig[] = withHiddenMicrositesRemoved<Microsi
       },
     ],
   },
+  {
+    slug: 'mississippi-peak-flow',
+    keyFacts: [
+      'The record peak is 1,080,000 cubic feet per second on 1 August 1993.',
+      '1903 comes second at 1,020,000, and 1844 third at 1,000,000.',
+      'Five water years have reached 900,000: 1844, 1892, 1903, 1993, and 2019.',
+      'The lowest peak on the record is 136,000 cubic feet per second in 1934, less than an eighth of the record.',
+      'No peak was filed for the 17 water years from 1845 to 1861.',
+    ],
+    howToRead:
+      'Each bar is one water year, drawn to the highest flow that year; the violet bars are the five years that reached 900,000 cubic feet per second, and the dashed line is the middle year.',
+    sourceUrl: 'https://waterdata.usgs.gov/monitoring-location/USGS-07010000/',
+    label: 'Mississippi peak flow',
+    eyebrow: 'the Mississippi at St. Louis',
+    title: 'The Mississippi at St. Louis peaked at 1.08 million cubic feet per second in 1993.',
+    description:
+      'The US Geological Survey has filed the highest flow of the year at St. Louis for 165 water years, starting in 1844. The record is 1,080,000 cubic feet per second on 1 August 1993, four other years have passed 900,000, and the lowest peak on the record is 136,000.',
+    paragraphs: [
+      'Every USGS stream gauge files the highest flow of the year, and the file at St. Louis runs from 1844. The gauge sits on the Mississippi just below the city, where the river drains 697,000 square miles of the basin above it, and it measures discharge in cubic feet per second: how much water moves past one point each second.',
+      'The record is the flood of 1993, which crested at 1,080,000 cubic feet per second on 1 August. Two older floods sit close behind, at 1,020,000 in 1903 and 1,000,000 in 1844, and the 2019 flood is fourth at 941,000. Five water years in all have passed 900,000. The middle year of the 165 is 511,000, less than half the record, which is the shape of a river that spends most years well below its worst.',
+      'Two things to read carefully. The record has a hole: no peak was filed for the 17 water years from 1845 to 1861, so the chart starts, stops, and starts again. And a peak is the highest single day of a year rather than the year as a whole, which is why a long, high-water season can rank below one sharp flood.',
+    ],
+    accent: 'violet',
+    dataSource: 'US Geological Survey',
+    chartType: 'Bar chart',
+    category: 'Environment & geography',
+    dataNote:
+      'Data: USGS Water Data OGC API, the peaks collection (api.waterdata.usgs.gov/ogcapi/v0/collections/peaks/items), read at deploy time without a key. One request asks for monitoring location USGS-07010000 (the Mississippi River at St. Louis) and parameter 00060 (discharge), and returns the whole record, 165 rows, in one page. A peak is filed under the water year, which starts on 1 October, so a peak on 8 October 1955 is filed under water year 1956 and the chart follows the agency rather than the calendar. Years between 1845 and 1861 carry no row at all and are left as gaps rather than drawn as zero. Each row keeps the qualifiers the agency attached, such as UNKNOWNREGULATION where the agency could not tell whether works upstream changed the flow, or MAXDAILYMEAN where the peak is a daily mean rather than an instantaneous reading. If the endpoint is slow or unreachable at build time the page falls back to the committed snapshot in apps/web/src/fixtures and says so in the build log.',
+    references: [
+      {
+        label: 'Peak-flow record and station details, Mississippi River at St. Louis (USGS)',
+        url: 'https://waterdata.usgs.gov/monitoring-location/USGS-07010000/',
+        kind: 'data',
+      },
+      {
+        label: 'The peaks request this site reads (USGS Water Data OGC API)',
+        url: 'https://api.waterdata.usgs.gov/ogcapi/v0/collections/peaks/items?monitoring_location_id=USGS-07010000&parameter_code=00060&limit=500',
+        kind: 'data',
+      },
+      {
+        label: 'USGS Water Services documentation',
+        url: 'https://waterservices.usgs.gov/docs/',
+        kind: 'data',
+      },
+      {
+        label: 'USGS Water Data OGC API documentation',
+        url: 'https://api.waterdata.usgs.gov/docs/',
+        kind: 'data',
+      },
+    ],
+  },
 ]).filter((microsite) => PUBLISHED_MICROSITES.includes(microsite.slug));

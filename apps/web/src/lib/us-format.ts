@@ -132,3 +132,29 @@ export function formatMillimetresPerYear(value: number): string {
 export function formatInches(value: number): string {
   return `${Math.round(value)} inches`;
 }
+
+/**
+ * Formats a streamflow in cubic feet per second, e.g. "1,080,000 cfs".
+ *
+ * cfs is the unit the US Geological Survey publishes streamflow in, and the
+ * one every hydrology reader knows. The prose spells it out on first use.
+ *
+ * @param value - the discharge in cubic feet per second
+ * @returns the formatted string
+ */
+export function formatDischargeCubicFeetPerSecond(value: number): string {
+  return `${formatCount(value)} cfs`;
+}
+
+/**
+ * Formats a streamflow as millions of cubic feet per second, e.g. "1.08".
+ *
+ * The chart axis carries the unit in its caption, so tick labels stay short
+ * and the axis does not eat the plot.
+ *
+ * @param value - the discharge in cubic feet per second
+ * @returns the value in millions, to two decimals
+ */
+export function formatMillionsCubicFeetPerSecond(value: number): string {
+  return (value / 1_000_000).toFixed(2);
+}

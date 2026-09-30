@@ -293,6 +293,73 @@ vi.mock('@/lib/food-recalls-data', async (importOriginal) => {
   };
 });
 
+vi.mock('@/lib/peak-streamflow-data', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/peak-streamflow-data')>();
+  return {
+    ...actual,
+    fetchPeakStreamflowStory: vi.fn().mockResolvedValue({
+      bars: [
+        {
+          waterYear: 1844,
+          label: '1844',
+          peakDate: '1844-06-27',
+          peakDateLabel: '27 June 1844',
+          dischargeCubicFeetPerSecond: 1000000,
+        },
+        {
+          waterYear: 1993,
+          label: '1993',
+          peakDate: '1993-08-01',
+          peakDateLabel: '1 August 1993',
+          dischargeCubicFeetPerSecond: 1080000,
+        },
+        {
+          waterYear: 2025,
+          label: '2025',
+          peakDate: '2025-07-30',
+          peakDateLabel: '30 July 2025',
+          dischargeCubicFeetPerSecond: 378000,
+        },
+      ],
+      yearCount: 165,
+      firstWaterYear: 1844,
+      lastWaterYear: 2025,
+      record: {
+        waterYear: 1993,
+        label: '1993',
+        peakDate: '1993-08-01',
+        peakDateLabel: '1 August 1993',
+        dischargeCubicFeetPerSecond: 1080000,
+      },
+      runnerUp: {
+        waterYear: 1903,
+        label: '1903',
+        peakDate: '1903-06-10',
+        peakDateLabel: '10 June 1903',
+        dischargeCubicFeetPerSecond: 1020000,
+      },
+      lowest: {
+        waterYear: 1934,
+        label: '1934',
+        peakDate: '1934-04-24',
+        peakDateLabel: '24 April 1934',
+        dischargeCubicFeetPerSecond: 136000,
+      },
+      latest: {
+        waterYear: 2025,
+        label: '2025',
+        peakDate: '2025-07-30',
+        peakDateLabel: '30 July 2025',
+        dischargeCubicFeetPerSecond: 378000,
+      },
+      medianDischargeCubicFeetPerSecond: 511000,
+      missingWaterYears: [1845, 1861],
+      missingYearCount: 17,
+      bigPeakYears: [1844, 1892, 1903, 1993, 2019],
+    }),
+  };
+});
+
 describe('MicrositePage', () => {
   it('renders the fda-food-recalls story with its chart, stat cards, and sources', async () => {
     const stream = await renderToReadableStream(
@@ -553,6 +620,38 @@ describe('MicrositePage', () => {
         title: 'FEMA declarations - usa-data-lab',
         description: expect.any(String),
         url: '/society/fema-disaster-declarations/',
+        type: 'article',
+      },
+    });
+  });
+
+  it('renders the mississippi-peak-flow story with its chart, stat cards, and sources', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('mississippi-peak-flow'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain(
+      'The Mississippi at St. Louis peaked at 1.08 million cubic feet per second in 1993.',
+    );
+    expect(html).toContain('href="/environment"');
+    expect(html).toContain('Record peak, 1 August 1993');
+    expect(html).toContain('1,080,000 cfs');
+    expect(html).toContain('5 of 165');
+    expect(html).toContain('Peak-flow record and station details, Mississippi River at St. Louis');
+    expect(html).toContain('aria-label="Breadcrumb"');
+    expect(html.match(/<h1[^>]*>/g) ?? []).toHaveLength(1);
+  });
+
+  it('returns a unique document title for the mississippi-peak-flow microsite', async () => {
+    await expect(
+      generateMetadata({ params: Promise.resolve(paramsFor('mississippi-peak-flow')) }),
+    ).resolves.toEqual({
+      title: 'Mississippi peak flow - usa-data-lab',
+      description: expect.any(String),
+      openGraph: {
+        title: 'Mississippi peak flow - usa-data-lab',
+        description: expect.any(String),
+        url: '/environment/mississippi-peak-flow/',
         type: 'article',
       },
     });
