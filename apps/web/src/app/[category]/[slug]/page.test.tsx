@@ -227,6 +227,39 @@ vi.mock('@/lib/treasury-rate-data', async (importOriginal) => {
   };
 });
 
+vi.mock('@/lib/cpsc-recall-data', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/cpsc-recall-data')>();
+  return {
+    ...actual,
+    fetchCpscProductRecallStory: vi.fn().mockResolvedValue({
+      bars: [
+        { year: 2014, label: '2014', recallCount: 296, partial: false },
+        { year: 2025, label: '2025', recallCount: 420, partial: false },
+        { year: 2026, label: '2026', recallCount: 459, partial: true },
+      ],
+      totalRecalls: 3986,
+      firstYear: 2014,
+      newestYear: 2026,
+      newestYearCount: 459,
+      newestRecallDateLabel: '24 September 2026',
+      busiestCompleteYear: { year: 2025, recallCount: 420 },
+      quietestCompleteYear: { year: 2021, recallCount: 219 },
+      remedies: [
+        { option: 'Refund', recallCount: 1980, sharePercent: 49.7 },
+        { option: 'Repair', recallCount: 1289, sharePercent: 32.3 },
+        { option: 'Replace', recallCount: 1003, sharePercent: 25.2 },
+        { option: 'Dispose', recallCount: 22, sharePercent: 0.6 },
+        { option: 'New Instructions', recallCount: 20, sharePercent: 0.5 },
+      ],
+      refundCount: 1980,
+      repairCount: 1289,
+      topCountryCount: 2312,
+      topCountrySharePercent: 58.0,
+      countryCount: 122,
+    }),
+  };
+});
+
 vi.mock('@/lib/fema-declarations-data', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/lib/fema-declarations-data')>();
   return {
@@ -640,6 +673,42 @@ describe('MicrositePage', () => {
     expect(html).toContain('Peak-flow record and station details, Mississippi River at St. Louis');
     expect(html).toContain('aria-label="Breadcrumb"');
     expect(html.match(/<h1[^>]*>/g) ?? []).toHaveLength(1);
+  });
+
+  it('renders the cpsc-product-recalls story with its chart, stat cards, and sources', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('cpsc-product-recalls'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain(
+      '459 consumer product recalls so far in 2026, more than any full year since 2014.',
+    );
+    expect(html).toContain('href="/society"');
+    expect(html).toContain('Recalls since 2014');
+    expect(html).toContain('3,986');
+    expect(html).toContain('459');
+    expect(html).toContain('Recalls naming China');
+    expect(html).toContain('2,312');
+    expect(html).toContain('Remedy options');
+    expect(html).toContain('1,980');
+    expect(html).toContain('SaferProducts.gov recall service, the endpoint this site reads (CPSC)');
+    expect(html).toContain('aria-label="Breadcrumb"');
+    expect(html.match(/<h1[^>]*>/g) ?? []).toHaveLength(1);
+  });
+
+  it('returns a unique document title for the cpsc-product-recalls microsite', async () => {
+    await expect(
+      generateMetadata({ params: Promise.resolve(paramsFor('cpsc-product-recalls')) }),
+    ).resolves.toEqual({
+      title: 'Product recalls - usa-data-lab',
+      description: expect.any(String),
+      openGraph: {
+        title: 'Product recalls - usa-data-lab',
+        description: expect.any(String),
+        url: '/society/cpsc-product-recalls/',
+        type: 'article',
+      },
+    });
   });
 
   it('returns a unique document title for the mississippi-peak-flow microsite', async () => {

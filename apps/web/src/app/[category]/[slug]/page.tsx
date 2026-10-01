@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import { CdcObesityChart } from '@/components/CdcObesityChart';
+import { CpscRecallsChart } from '@/components/CpscRecallsChart';
 import { FemaDeclarationsChart } from '@/components/FemaDeclarationsChart';
 import { FoodRecallsChart } from '@/components/FoodRecallsChart';
 import { HawaiiQuakesChart } from '@/components/HawaiiQuakesChart';
@@ -20,6 +21,7 @@ import {
   type CdcObesityStory,
   fetchCdcObesityStory,
 } from '@/lib/cdc-obesity-data';
+import { type CpscProductRecallStory, fetchCpscProductRecallStory } from '@/lib/cpsc-recall-data';
 import { type FemaDeclarationStory, fetchFemaDeclarationStory } from '@/lib/fema-declarations-data';
 import { fetchFoodRecallStory, type FoodRecallStory } from '@/lib/food-recalls-data';
 import { fetchHawaiiQuakes, type HawaiiQuakeStory } from '@/lib/hawaii-quakes-data';
@@ -158,6 +160,7 @@ interface StoryData {
   fema: FemaDeclarationStory | null;
   foodRecalls: FoodRecallStory | null;
   peakStreamflow: PeakStreamflowStory | null;
+  cpsc: CpscProductRecallStory | null;
 }
 
 /**
@@ -181,6 +184,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       fema: null,
       foodRecalls: null,
       peakStreamflow: null,
+      cpsc: null,
     };
   }
   if (slug === 'cdc-county-obesity') {
@@ -194,6 +198,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       fema: null,
       foodRecalls: null,
       peakStreamflow: null,
+      cpsc: null,
     };
   }
   if (slug === 'us-temperature-record') {
@@ -207,6 +212,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       fema: null,
       foodRecalls: null,
       peakStreamflow: null,
+      cpsc: null,
     };
   }
   if (slug === 'battery-sea-level') {
@@ -220,6 +226,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       fema: null,
       foodRecalls: null,
       peakStreamflow: null,
+      cpsc: null,
     };
   }
   if (slug === 'treasury-interest-rate') {
@@ -233,6 +240,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       fema: null,
       foodRecalls: null,
       peakStreamflow: null,
+      cpsc: null,
     };
   }
   if (slug === 'fema-disaster-declarations') {
@@ -246,6 +254,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       fema: await fetchFemaDeclarationStory(),
       foodRecalls: null,
       peakStreamflow: null,
+      cpsc: null,
     };
   }
   if (slug === 'fda-food-recalls') {
@@ -259,6 +268,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       fema: null,
       foodRecalls: await fetchFoodRecallStory(),
       peakStreamflow: null,
+      cpsc: null,
     };
   }
   if (slug === 'mississippi-peak-flow') {
@@ -272,6 +282,21 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       fema: null,
       foodRecalls: null,
       peakStreamflow: await fetchPeakStreamflowStory(),
+      cpsc: null,
+    };
+  }
+  if (slug === 'cpsc-product-recalls') {
+    return {
+      jobless: null,
+      hawaii: null,
+      obesity: null,
+      temperature: null,
+      seaLevel: null,
+      treasuryRate: null,
+      fema: null,
+      foodRecalls: null,
+      peakStreamflow: null,
+      cpsc: await fetchCpscProductRecallStory(),
     };
   }
   return {
@@ -284,6 +309,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
     fema: null,
     foodRecalls: null,
     peakStreamflow: null,
+    cpsc: null,
   };
 }
 
@@ -653,6 +679,49 @@ function renderStoryContent(
               accent="violet"
               testId="peak-streamflow-big-years"
               dataValue={peakStreamflow.bigPeakYears.length}
+            />
+          </dl>
+        ),
+      };
+    }
+    case 'cpsc-product-recalls': {
+      const { cpsc } = data;
+      if (cpsc === null) {
+        return NO_STORY_CONTENT;
+      }
+      return {
+        chart: (
+          <CpscRecallsChart
+            bars={cpsc.bars}
+            totalRecalls={cpsc.totalRecalls}
+            newestYear={cpsc.newestYear}
+            newestYearCount={cpsc.newestYearCount}
+            newestRecallDateLabel={cpsc.newestRecallDateLabel}
+            remedies={cpsc.remedies}
+          />
+        ),
+        stats: (
+          <dl className="grid gap-6 py-[var(--spacing-2xl)] sm:grid-cols-3">
+            <StatCard
+              label={`Recalls since ${String(cpsc.firstYear)}`}
+              value={formatCount(cpsc.totalRecalls)}
+              accent="fuchsia"
+              testId="cpsc-recalls-total"
+              dataValue={cpsc.totalRecalls}
+            />
+            <StatCard
+              label={`${String(cpsc.newestYear)} so far`}
+              value={formatCount(cpsc.newestYearCount)}
+              accent="fuchsia"
+              testId="cpsc-recalls-newest-year"
+              dataValue={cpsc.newestYearCount}
+            />
+            <StatCard
+              label="Recalls naming China"
+              value={formatCount(cpsc.topCountryCount)}
+              accent="fuchsia"
+              testId="cpsc-recalls-top-country"
+              dataValue={cpsc.topCountryCount}
             />
           </dl>
         ),

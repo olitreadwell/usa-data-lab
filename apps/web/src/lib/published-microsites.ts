@@ -12,4 +12,5 @@ export const PUBLISHED_MICROSITES: readonly string[] = [
   'fema-disaster-declarations',
   'fda-food-recalls',
   'mississippi-peak-flow',
+  'cpsc-product-recalls',
 ];

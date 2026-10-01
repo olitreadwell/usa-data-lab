@@ -7,3 +7,7 @@ experiment that worked well enough to teach from.
   a bar chart of the highest flow in every water year at the Mississippi at
   St. Louis, from the USGS peak-flow record, and the four things that got in
   the way.
+- [Build a product recall chart from the CPSC's open file](docs/experiments/cpsc-product-recalls/TUTORIAL.md):
+  a bar chart of the consumer product recalls published in every calendar
+  year since 2014, from the SaferProducts.gov recall service, and the five
+  things that got in the way.

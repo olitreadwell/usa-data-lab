@@ -16,6 +16,7 @@ export type MicrositeDataSource =
   | 'Federal Emergency Management Agency (FEMA)'
   | 'US Food and Drug Administration (FDA)'
   | 'National Oceanic and Atmospheric Administration (NOAA)'
+  | 'Consumer Product Safety Commission (CPSC)'
   | 'US Department of the Treasury'
   | 'data.gov'
   | 'OpenStreetMap'
@@ -593,6 +594,53 @@ export const MICROSITES: MicrositeConfig[] = withHiddenMicrositesRemoved<Microsi
       {
         label: 'USGS Water Data OGC API documentation',
         url: 'https://api.waterdata.usgs.gov/docs/',
+        kind: 'data',
+      },
+    ],
+  },
+  {
+    slug: 'cpsc-product-recalls',
+    keyFacts: [
+      '3,986 consumer product recalls were published between 2014 and 24 September 2026.',
+      '2026 already holds 459 of them, more than any complete year in the window.',
+      'The quietest year was 2021 at 219 recalls; the busiest complete year was 2025 at 420.',
+      'China is named as a manufacturer country on 2,312 of the 3,986 recalls, 58 percent.',
+      'A refund is the most common remedy, offered on 1,980 recalls, and a repair on 1,289.',
+    ],
+    howToRead:
+      'Each bar counts the recalls the agency published in one calendar year, oldest first. The grey bar is 2026, which the agency is still filling, and the newest recall on the page is dated 24 September 2026.',
+    sourceUrl: 'https://www.saferproducts.gov/RestWebServices/Recall',
+    label: 'Product recalls',
+    eyebrow: 'consumer product recalls',
+    title: '459 consumer product recalls so far in 2026, more than any full year since 2014.',
+    description:
+      'The Consumer Product Safety Commission has published 3,986 consumer product recalls since 2014. The 2026 file already holds 459 of them through 24 September, more than any complete year in the window, and China is named as a manufacturer country on 2,312 of the recalls.',
+    paragraphs: [
+      'The Consumer Product Safety Commission writes every recall it publishes into an open file, one row per recall, and the same records run the public search at SaferProducts.gov. The file covers consumer products, so food sits in the FDA file, drugs in another, and vehicles with the traffic safety agency. Each row names the product, the hazard the agency found, the remedy offered, and the countries that made the product.',
+      'The yearly count has moved a long way in thirteen years. It ran at 330 in 2016, fell to 219 in 2021, then climbed to 420 in 2025. Through 24 September 2026 it stands at 459, which is more than any complete year in the window, and the agency is still filing recalls for the year.',
+      'China appears as a manufacturer country on 2,312 of the 3,986 recalls, 58 percent, and the United States on 753. 122 countries show up at least once. A recall can name several countries, so those counts add to more than the number of recalls.',
+      'Read the count as recall records rather than products. One row can cover several products and any number of units, and a recall is dated to the day the agency published it. A refund is the most common remedy, offered on 1,980 recalls, with a repair on 1,289 and a replacement on 1,003.',
+    ],
+    accent: 'fuchsia',
+    dataSource: 'Consumer Product Safety Commission (CPSC)',
+    chartType: 'Bar chart',
+    category: 'Society & community',
+    dataNote:
+      'Data: SaferProducts.gov recall service (www.saferproducts.gov/RestWebServices/Recall), read at deploy time without a key. One request answers for one calendar year, so the page makes 13 requests, for 2014 through 2026, and each response holds that year of recalls. A query wider than a year fails with a single row reading "Error retrieving Recalls: The underlying provider failed on Open.", which the reader turns into a fallback rather than a count. The 2026 row is partial: the file ends on 24 September 2026, so the busiest and quietest years the copy names are picked from the complete years. Manufacturer countries are counted per recall and overlap, so the country counts add to more than the number of recalls. The remedy option list is nearly an enum (Refund, Repair, Replace, Dispose, New Instructions, Label, Inspect) with two junk entries further down, one reading "R" and one repeating a recall paragraph; the chart lists the five options with the most recalls and leaves the tail out. If the service is slow or unreachable at build time the page falls back to the committed snapshot in apps/web/src/fixtures and says so in the build log.',
+    references: [
+      {
+        label: 'SaferProducts.gov recall service, the endpoint this site reads (CPSC)',
+        url: 'https://www.saferproducts.gov/RestWebServices/Recall',
+        kind: 'data',
+      },
+      {
+        label: "CPSC recalls, the agency's own recall list",
+        url: 'https://www.cpsc.gov/Recalls',
+        kind: 'data',
+      },
+      {
+        label: 'SaferProducts.gov, the public recall search',
+        url: 'https://www.saferproducts.gov/',
         kind: 'data',
       },
     ],
