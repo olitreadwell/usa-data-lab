@@ -13,4 +13,5 @@ export const PUBLISHED_MICROSITES: readonly string[] = [
   'fda-food-recalls',
   'mississippi-peak-flow',
   'cpsc-product-recalls',
+  'cfpb-consumer-complaints',
 ];

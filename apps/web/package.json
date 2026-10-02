@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "next build && node scripts/generate-csp.mjs",
+    "build": "node scripts/clear-next-fetch-cache.mjs && next build && node scripts/generate-csp.mjs",
     "start": "next start",
     "lint": "eslint .",
     "format": "prettier --write \"src/**/*.{ts,tsx,css,scss,json}\"",

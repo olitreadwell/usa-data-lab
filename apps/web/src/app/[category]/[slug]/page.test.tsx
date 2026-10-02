@@ -260,6 +260,43 @@ vi.mock('@/lib/cpsc-recall-data', async (importOriginal) => {
   };
 });
 
+vi.mock('@/lib/cfpb-complaints-data', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/cfpb-complaints-data')>();
+  return {
+    ...actual,
+    fetchCfpConsumerComplaintStory: vi.fn().mockResolvedValue({
+      bars: [
+        { year: 2011, label: '2011', complaintCount: 2536, partial: false },
+        { year: 2025, label: '2025', complaintCount: 5442963, partial: false },
+        { year: 2026, label: '2026', complaintCount: 5462631, partial: true },
+      ],
+      totalComplaints: 18145013,
+      firstYear: 2011,
+      newestYear: 2026,
+      newestYearCount: 5462631,
+      newestReceivedDateLabel: '2 October 2026',
+      busiestCompleteYear: { year: 2025, complaintCount: 5442963 },
+      companies: [
+        {
+          company: 'TRANSUNION INTERMEDIATE HOLDINGS, INC.',
+          complaintCount: 5015681,
+          sharePercent: 27.6,
+        },
+        { company: 'EQUIFAX, INC.', complaintCount: 4815296, sharePercent: 26.5 },
+        {
+          company: 'Experian Information Solutions Inc.',
+          complaintCount: 4396123,
+          sharePercent: 24.2,
+        },
+      ],
+      topCompanyName: 'TRANSUNION INTERMEDIATE HOLDINGS, INC.',
+      topCompanyCount: 5015681,
+      topThreeCount: 14227100,
+      topThreeSharePercent: 78.4,
+    }),
+  };
+});
+
 vi.mock('@/lib/fema-declarations-data', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/lib/fema-declarations-data')>();
   return {
@@ -706,6 +743,43 @@ describe('MicrositePage', () => {
         title: 'Product recalls - usa-data-lab',
         description: expect.any(String),
         url: '/society/cpsc-product-recalls/',
+        type: 'article',
+      },
+    });
+  });
+
+  it('renders the cfpb-consumer-complaints story with its chart, stat cards, and sources', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('cfpb-consumer-complaints'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain(
+      'The CFPB counted 5.4 million consumer complaints in 2025, and 2026 passed that by October.',
+    );
+    expect(html).toContain('href="/economy"');
+    expect(html).toContain('Complaints in the file');
+    expect(html).toContain('18,145,013');
+    expect(html).toContain('2026 so far');
+    expect(html).toContain('5,462,631');
+    expect(html).toContain('Complaints naming the three bureaus');
+    expect(html).toContain('14,227,100');
+    expect(html).toContain('The companies named most often');
+    expect(html).toContain('TRANSUNION INTERMEDIATE HOLDINGS, INC.');
+    expect(html).toContain('The search API endpoint this site reads (CFPB)');
+    expect(html).toContain('aria-label="Breadcrumb"');
+    expect(html.match(/<h1[^>]*>/g) ?? []).toHaveLength(1);
+  });
+
+  it('returns a unique document title for the cfpb-consumer-complaints microsite', async () => {
+    await expect(
+      generateMetadata({ params: Promise.resolve(paramsFor('cfpb-consumer-complaints')) }),
+    ).resolves.toEqual({
+      title: 'Consumer complaints - usa-data-lab',
+      description: expect.any(String),
+      openGraph: {
+        title: 'Consumer complaints - usa-data-lab',
+        description: expect.any(String),
+        url: '/economy/cfpb-consumer-complaints/',
         type: 'article',
       },
     });

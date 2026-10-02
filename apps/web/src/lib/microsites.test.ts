@@ -57,13 +57,14 @@ describe('relatedMicrositesFor', () => {
     }
   });
 
-  it('pairs the two economy stories with each other', () => {
+  it('pairs the economy stories with each other', () => {
     const jobless = MICROSITES.find((microsite) => microsite.slug === 'jobless-rate');
     if (jobless === undefined) {
       throw new Error('jobless-rate missing');
     }
     expect(relatedMicrositesFor(jobless).map((microsite) => microsite.slug)).toEqual([
       'treasury-interest-rate',
+      'cfpb-consumer-complaints',
     ]);
   });
 });

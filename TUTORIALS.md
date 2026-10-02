@@ -11,3 +11,7 @@ experiment that worked well enough to teach from.
   a bar chart of the consumer product recalls published in every calendar
   year since 2014, from the SaferProducts.gov recall service, and the five
   things that got in the way.
+- [Build a consumer complaint chart from the CFPB's open file](docs/experiments/cfpb-consumer-complaints/TUTORIAL.md):
+  a bar chart of the complaints the CFPB sent to a company in every calendar
+  year since 2011, from the Consumer Complaint Database search API, and the
+  five things that got in the way.

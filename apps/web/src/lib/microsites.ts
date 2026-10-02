@@ -17,6 +17,7 @@ export type MicrositeDataSource =
   | 'US Food and Drug Administration (FDA)'
   | 'National Oceanic and Atmospheric Administration (NOAA)'
   | 'Consumer Product Safety Commission (CPSC)'
+  | 'Consumer Financial Protection Bureau (CFPB)'
   | 'US Department of the Treasury'
   | 'data.gov'
   | 'OpenStreetMap'
@@ -641,6 +642,59 @@ export const MICROSITES: MicrositeConfig[] = withHiddenMicrositesRemoved<Microsi
       {
         label: 'SaferProducts.gov, the public recall search',
         url: 'https://www.saferproducts.gov/',
+        kind: 'data',
+      },
+    ],
+  },
+  {
+    slug: 'cfpb-consumer-complaints',
+    keyFacts: [
+      '2025 holds 5,442,963 complaints, close to twice the 2,734,268 filed in 2024.',
+      'Complaints passed one million in a year for the first time in 2023, at 1,292,049.',
+      'TransUnion, Equifax, and Experian are the companies named most often across the whole file.',
+      'The database opened on 1 December 2011, and the 2011 bar on the chart covers that month alone.',
+      'The 2026 file counted more complaints by 2 October than any full year before it.',
+    ],
+    howToRead:
+      'Each bar counts the complaints the bureau sent to a company in one calendar year, oldest first; the grey bar is 2026, which is still being filled.',
+    sourceUrl: 'https://www.consumerfinance.gov/data-research/consumer-complaints/',
+    label: 'Consumer complaints',
+    eyebrow: 'consumer complaints to the CFPB',
+    title:
+      'The CFPB counted 5.4 million consumer complaints in 2025, and 2026 passed that by October.',
+    description:
+      'The Consumer Financial Protection Bureau publishes every complaint it sends to a company. The file holds 5,442,963 complaints for 2025 against 2,734,268 for 2024, and the 2026 count passed last year by 2 October. TransUnion, Equifax, and Experian are the companies named most often.',
+    paragraphs: [
+      'The Consumer Financial Protection Bureau publishes every complaint it sends to a company, one row per complaint, and the rows run back to 1 December 2011. A row names the product, the issue, the company, the date the bureau received it, and how the company answered. This page counts those rows by the year they arrived.',
+      'The count grew slowly for a decade and then took off. It passed a million for the first time in 2023, reached 2,734,268 in 2024, then 5,442,963 in 2025. By 2 October the 2026 file already held more complaints than any full year before it.',
+      'Almost all of the growth sits in one place. Credit reporting is the product named in most complaints, and the three national credit bureaus, TransUnion, Equifax, and Experian, are the companies named most often across the file. A dispute with a credit report often reaches all three at once, because a person can file a separate complaint against each bureau, and every one of them becomes its own row.',
+      'Two things about the numbers. A complaint is a description of a problem from one person, not a finding that the company did anything wrong, and the bureau publishes the company response beside it. And the file counts complaints rather than people: the newest days look thin because the bureau adds a complaint only after the company replies or after fifteen days, so the last rows are still arriving.',
+    ],
+    accent: 'purple',
+    dataSource: 'Consumer Financial Protection Bureau (CFPB)',
+    chartType: 'Bar chart',
+    category: 'Economy & business',
+    dataNote:
+      'Data: the Consumer Complaint Database of the Consumer Financial Protection Bureau, read at deploy time from the search API at consumerfinance.gov without a key. The API answers one question per request, so the page reads one year of totals at a time, plus one request for the product and company tallies and one or two more to find the newest received day. The parameters size=0 and no_aggs=true keep a count request to about 15 KB rather than the roughly 400 KB the default aggregations add. The window starts in 2011 because the bureau published its first complaints on 1 December 2011, so that bar covers one month. The newest year is partial and its bar grows with each publication; a complaint enters the file after the company responds or after fifteen days. The company counts run across the whole window and overlap only in the sense that one person can file against several companies. If the API is slow or unreachable at build time the page falls back to the committed snapshot in apps/web/src/fixtures and says so in the build log.',
+    references: [
+      {
+        label: 'Consumer Complaint Database, the public search (CFPB)',
+        url: 'https://www.consumerfinance.gov/data-research/consumer-complaints/',
+        kind: 'data',
+      },
+      {
+        label: 'The search API endpoint this site reads (CFPB)',
+        url: 'https://www.consumerfinance.gov/data-research/consumer-complaints/search/api/v1/',
+        kind: 'data',
+      },
+      {
+        label: 'How the bureau handles a complaint and when it publishes one (CFPB)',
+        url: 'https://www.consumerfinance.gov/complaint/',
+        kind: 'data',
+      },
+      {
+        label: 'Consumer Complaint Database API documentation (CFPB)',
+        url: 'https://cfpb.github.io/api/ccdb/',
         kind: 'data',
       },
     ],

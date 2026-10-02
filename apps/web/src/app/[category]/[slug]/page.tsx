@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import { CdcObesityChart } from '@/components/CdcObesityChart';
+import { CfpbComplaintsChart } from '@/components/CfpbComplaintsChart';
 import { CpscRecallsChart } from '@/components/CpscRecallsChart';
 import { FemaDeclarationsChart } from '@/components/FemaDeclarationsChart';
 import { FoodRecallsChart } from '@/components/FoodRecallsChart';
@@ -21,6 +22,10 @@ import {
   type CdcObesityStory,
   fetchCdcObesityStory,
 } from '@/lib/cdc-obesity-data';
+import {
+  type CfpConsumerComplaintStory,
+  fetchCfpConsumerComplaintStory,
+} from '@/lib/cfpb-complaints-data';
 import { type CpscProductRecallStory, fetchCpscProductRecallStory } from '@/lib/cpsc-recall-data';
 import { type FemaDeclarationStory, fetchFemaDeclarationStory } from '@/lib/fema-declarations-data';
 import { fetchFoodRecallStory, type FoodRecallStory } from '@/lib/food-recalls-data';
@@ -161,6 +166,7 @@ interface StoryData {
   foodRecalls: FoodRecallStory | null;
   peakStreamflow: PeakStreamflowStory | null;
   cpsc: CpscProductRecallStory | null;
+  cfpb: CfpConsumerComplaintStory | null;
 }
 
 /**
@@ -185,6 +191,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       foodRecalls: null,
       peakStreamflow: null,
       cpsc: null,
+      cfpb: null,
     };
   }
   if (slug === 'cdc-county-obesity') {
@@ -199,6 +206,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       foodRecalls: null,
       peakStreamflow: null,
       cpsc: null,
+      cfpb: null,
     };
   }
   if (slug === 'us-temperature-record') {
@@ -213,6 +221,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       foodRecalls: null,
       peakStreamflow: null,
       cpsc: null,
+      cfpb: null,
     };
   }
   if (slug === 'battery-sea-level') {
@@ -227,6 +236,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       foodRecalls: null,
       peakStreamflow: null,
       cpsc: null,
+      cfpb: null,
     };
   }
   if (slug === 'treasury-interest-rate') {
@@ -241,6 +251,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       foodRecalls: null,
       peakStreamflow: null,
       cpsc: null,
+      cfpb: null,
     };
   }
   if (slug === 'fema-disaster-declarations') {
@@ -255,6 +266,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       foodRecalls: null,
       peakStreamflow: null,
       cpsc: null,
+      cfpb: null,
     };
   }
   if (slug === 'fda-food-recalls') {
@@ -269,6 +281,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       foodRecalls: await fetchFoodRecallStory(),
       peakStreamflow: null,
       cpsc: null,
+      cfpb: null,
     };
   }
   if (slug === 'mississippi-peak-flow') {
@@ -283,6 +296,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       foodRecalls: null,
       peakStreamflow: await fetchPeakStreamflowStory(),
       cpsc: null,
+      cfpb: null,
     };
   }
   if (slug === 'cpsc-product-recalls') {
@@ -297,6 +311,22 @@ async function loadStoryData(slug: string): Promise<StoryData> {
       foodRecalls: null,
       peakStreamflow: null,
       cpsc: await fetchCpscProductRecallStory(),
+      cfpb: null,
+    };
+  }
+  if (slug === 'cfpb-consumer-complaints') {
+    return {
+      jobless: null,
+      hawaii: null,
+      obesity: null,
+      temperature: null,
+      seaLevel: null,
+      treasuryRate: null,
+      fema: null,
+      foodRecalls: null,
+      peakStreamflow: null,
+      cpsc: null,
+      cfpb: await fetchCfpConsumerComplaintStory(),
     };
   }
   return {
@@ -310,6 +340,7 @@ async function loadStoryData(slug: string): Promise<StoryData> {
     foodRecalls: null,
     peakStreamflow: null,
     cpsc: null,
+    cfpb: null,
   };
 }
 
@@ -722,6 +753,49 @@ function renderStoryContent(
               accent="fuchsia"
               testId="cpsc-recalls-top-country"
               dataValue={cpsc.topCountryCount}
+            />
+          </dl>
+        ),
+      };
+    }
+    case 'cfpb-consumer-complaints': {
+      const { cfpb } = data;
+      if (cfpb === null) {
+        return NO_STORY_CONTENT;
+      }
+      return {
+        chart: (
+          <CfpbComplaintsChart
+            bars={cfpb.bars}
+            totalComplaints={cfpb.totalComplaints}
+            newestYear={cfpb.newestYear}
+            newestYearCount={cfpb.newestYearCount}
+            newestReceivedDateLabel={cfpb.newestReceivedDateLabel}
+            companies={cfpb.companies}
+          />
+        ),
+        stats: (
+          <dl className="grid gap-6 py-[var(--spacing-2xl)] sm:grid-cols-3">
+            <StatCard
+              label="Complaints in the file"
+              value={formatCount(cfpb.totalComplaints)}
+              accent="purple"
+              testId="cfpb-complaints-total"
+              dataValue={cfpb.totalComplaints}
+            />
+            <StatCard
+              label={`${String(cfpb.newestYear)} so far`}
+              value={formatCount(cfpb.newestYearCount)}
+              accent="purple"
+              testId="cfpb-complaints-newest-year"
+              dataValue={cfpb.newestYearCount}
+            />
+            <StatCard
+              label="Complaints naming the three bureaus"
+              value={formatCount(cfpb.topThreeCount)}
+              accent="purple"
+              testId="cfpb-complaints-top-three"
+              dataValue={cfpb.topThreeCount}
             />
           </dl>
         ),
